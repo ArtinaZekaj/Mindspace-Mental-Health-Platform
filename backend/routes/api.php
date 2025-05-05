@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ReflectionController;
+use Illuminate\Support\Facades\Auth;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -22,4 +23,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/reflections', [ReflectionController::class, 'store']);
     Route::put('/reflections/{id}', [ReflectionController::class, 'update']);
     Route::delete('/reflections/{id}', [ReflectionController::class, 'destroy']);
+    Route::get('/reflections/summary', [ReflectionController::class, 'summary']);
+});
+
+Route::middleware('auth:sanctum')->get('/me', function () {
+    $user = Auth::user();
+
+    return response()->json([
+        'name' => $user->name,
+        'email' => $user->email,
+        'role' => $user->role,
+        'is_admin' => $user->role === 'admin',
+        'is_psychologist' => $user->role === 'psychologist',
+        'message' => match ($user->role) {
+            'admin' => 'Welcome, Admin! You have full access.',
+            'psychologist' => 'Hello Psychologist! Ready to check student moods?',
+            default => 'Welcome back!',
+        }
+    ]);
 });
