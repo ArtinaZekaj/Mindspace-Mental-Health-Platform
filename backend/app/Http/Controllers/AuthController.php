@@ -27,12 +27,18 @@ class AuthController extends Controller
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
+            'role' => $request->role,
         ]);
-
+        $token = $user->createToken('auth_token')->plainTextToken;
         return response()->json([
             'message' => 'Përdoruesi u regjistrua me sukses.',
-            'user'    => $user,
-        ], 201);
+            'user' => [
+                'name' => $user->name,
+                'email' => $user->email,
+                'role' => $user->role
+            ],
+            'token' => $token
+        ]);
     }
 
     public function login(Request $request): JsonResponse

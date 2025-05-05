@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ReflectionController;
+use App\Http\Controllers\AppointmentController;
 use Illuminate\Support\Facades\Auth;
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -41,4 +42,11 @@ Route::middleware('auth:sanctum')->get('/me', function () {
             default => 'Welcome back!',
         }
     ]);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/appointments', [AppointmentController::class, 'store']);
+    Route::get('/appointments/my', [AppointmentController::class, 'myAppointments']);
+    Route::get('/appointments/schedule', [AppointmentController::class, 'psychologistSchedule']);
+    Route::put('/appointments/{id}/status', [AppointmentController::class, 'updateStatus']);
 });
