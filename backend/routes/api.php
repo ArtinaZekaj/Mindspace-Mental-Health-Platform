@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ReflectionController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\CalendarController;
 use Illuminate\Support\Facades\Auth;
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -50,3 +51,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/appointments/schedule', [AppointmentController::class, 'psychologistSchedule']);
     Route::put('/appointments/{id}/status', [AppointmentController::class, 'updateStatus']);
 });
+
+Route::middleware('auth:sanctum')->get('/calendar/month', [CalendarController::class, 'monthOverview']);
