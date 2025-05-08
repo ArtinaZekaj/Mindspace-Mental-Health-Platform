@@ -1,13 +1,13 @@
-// src/App.js
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-
+import 'bootstrap/dist/css/bootstrap.min.css';
+import Layout from './Layout';
 import Login from './Login';
 import Register from './Register';
-import StudentDashboard from './StudentDashboard';
+import SimpleUserDashboard from './SimpleUserDashboard';
 import AdminDashboard from './AdminDashboard';
 import PsychologistDashboard from './PsychologistDashboard';
-
+import MoodTracking from './MoodTracking';
 
 function App() {
   const token = localStorage.getItem('token');
@@ -16,21 +16,30 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={token ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
+        <Route path="/" element={<Navigate to="/dashboard" />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route
-          path="/dashboard"
-          element={
-            token ? (
-              role === 'admin' ? <AdminDashboard /> :
-              role === 'psychologist' ? <PsychologistDashboard /> :
-              <StudentDashboard />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        />
+
+        {/* Admin and Psychologist dashboards */}
+        {token && role === 'admin' && (
+          <Route path="/dashboard" element={<AdminDashboard />} />
+        )}
+        {token && role === 'psychologist' && (
+          <Route path="/dashboard" element={<PsychologistDashboard />} />
+        )}
+
+        {/* User layout with nested routes */}
+        {token && role === 'user' && (
+          <Route path="/dashboard" element={<Layout />}>
+            <Route index element={<SimpleUserDashboard />} />
+            <Route path="mood" element={<MoodTracking />} />
+          </Route>
+        )}
+
+        {/* Fallback për jo të loguar */}
+        {!token && (
+          <Route path="/dashboard" element={<Navigate to="/login" />} />
+        )}
       </Routes>
     </Router>
   );
