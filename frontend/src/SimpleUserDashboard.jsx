@@ -11,8 +11,8 @@ function SimpleUserDashboard() {
       <div
         className="shadow w-100"
         style={{
-          background: 'linear-gradient(to right,rgb(39, 59, 37),rgb(219, 194, 210))', color: 'white',
-          // color: "#333", 
+          background: 'linear-gradient(to right,rgb(39, 59, 37),rgb(219, 194, 210))',
+          color: 'white',
           marginTop: '0',
           marginBottom: '2rem',
           padding: '4rem 3rem',
@@ -35,7 +35,6 @@ function SimpleUserDashboard() {
         </p>
       </div>
 
-
       {/* Top Cards */}
       <Row className="g-4 mb-4">
         <Col md={4}>
@@ -43,10 +42,12 @@ function SimpleUserDashboard() {
             <Card.Body className="d-flex flex-column justify-content-between">
               <div>
                 <div className="d-flex justify-content-between align-items-center mb-2">
-                  <Card.Title className="mb-0"><FaSmile className="me-2 text-primary" />Today's Mood</Card.Title>
-                  <a href="#" className="text-primary fw-semibold">Track Now</a>
+                  <Card.Title className="mb-0">
+                    <FaSmile className="me-2 text-primary" />Today's Mood
+                  </Card.Title>
+                  <a href="/mood-tracking" className="text-primary fw-semibold">Track Now</a>
                 </div>
-                <img src="/path/to/mood-chart-placeholder.png" alt="Mood Chart" className="img-fluid" />
+                <img src="/images/mood-chart-placeholder.png" alt="Mood Chart" className="img-fluid" />
               </div>
             </Card.Body>
           </Card>

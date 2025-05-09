@@ -28,7 +28,7 @@ function Layout() {
                     <Nav.Link onClick={() => navigate('/dashboard/daily-reflection')} className="d-flex align-items-center gap-3 fs-5 text-dark">
                         <FaBookOpen size={25} /> <span>Daily Reflection</span>
                     </Nav.Link>
-                    <Nav.Link onClick={() => navigate('/appointments/book')} className="d-flex align-items-center gap-3 fs-5 text-dark">
+                    <Nav.Link onClick={() => navigate('/dashboard/book-appointment')} className="d-flex align-items-center gap-3 fs-5 text-dark">
                         <FaCalendarPlus size={25} /> <span>Book Appointment</span>
                     </Nav.Link>
                     <Nav.Link onClick={() => navigate('/appointments')} className="d-flex align-items-center gap-3 fs-5 text-dark">
