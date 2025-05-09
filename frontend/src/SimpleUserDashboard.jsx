@@ -9,18 +9,32 @@ function SimpleUserDashboard() {
     <>
       {/* Welcome Banner */}
       <div
-        className="bg-primary text-white shadow w-100"
+        className="shadow w-100"
         style={{
+          background: 'linear-gradient(to right,rgb(39, 59, 37),rgb(219, 194, 210))', color: 'white',
+          // color: "#333", 
           marginTop: '0',
           marginBottom: '2rem',
           padding: '4rem 3rem',
           borderRadius: '1rem'
         }}
       >
-        <h3 className="fw-bold" style={{ fontSize: '2.8rem' }}>Good evening, {userName}</h3>
-        <p className="mb-1">{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}</p>
-        <p className="fs-5"><em>Every day is a new beginning. Take a deep breath and start again.</em></p>
+        <h3 className="fw-bold" style={{ fontSize: '2.8rem' }}>
+          Good evening, {userName}
+        </h3>
+        <p className="mb-1">
+          {new Date().toLocaleDateString('en-US', {
+            weekday: 'long',
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+          })}
+        </p>
+        <p className="fs-5">
+          <em>Every day is a new beginning. Take a deep breath and start again.</em>
+        </p>
       </div>
+
 
       {/* Top Cards */}
       <Row className="g-4 mb-4">

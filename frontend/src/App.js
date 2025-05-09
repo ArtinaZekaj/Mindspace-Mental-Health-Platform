@@ -8,6 +8,7 @@ import SimpleUserDashboard from './SimpleUserDashboard';
 import AdminDashboard from './AdminDashboard';
 import PsychologistDashboard from './PsychologistDashboard';
 import MoodTracking from './MoodTracking';
+import DailyReflection from './DailyReflection';
 
 function App() {
   const token = localStorage.getItem('token');
@@ -33,6 +34,7 @@ function App() {
           <Route path="/dashboard" element={<Layout />}>
             <Route index element={<SimpleUserDashboard />} />
             <Route path="mood" element={<MoodTracking />} />
+            <Route path="daily-reflection" element={<DailyReflection />} />
           </Route>
         )}
 

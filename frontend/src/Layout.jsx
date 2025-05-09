@@ -11,8 +11,12 @@ function Layout() {
             {/* Sidebar */}
             <div className="bg-white border-end d-flex flex-column px-4 py-4" style={{ width: '300px' }}>
                 <div className="d-flex justify-content-center mb-5">
-                    <h3 className="text-primary fw-bold">Mind<span className="text-dark">Space</span></h3>
+                    <h3 className="fw-bold">
+                        <span style={{ color: 'rgb(39, 59, 37)' }}>Mind</span>
+                        <span style={{ color: 'rgb(116, 66, 97)' }}>Space</span>
+                    </h3>
                 </div>
+
                 <Nav className="flex-column gap-3">
                     <Nav.Link onClick={() => navigate('/dashboard')} className="d-flex align-items-center gap-3 fs-5 text-dark">
                         <FaHome size={25} /> <span>Dashboard</span>
@@ -21,7 +25,7 @@ function Layout() {
                         <FaSmile size={25} /> <span>Mood Tracking</span>
                     </Nav.Link>
 
-                    <Nav.Link onClick={() => navigate('/reflection')} className="d-flex align-items-center gap-3 fs-5 text-dark">
+                    <Nav.Link onClick={() => navigate('/dashboard/daily-reflection')} className="d-flex align-items-center gap-3 fs-5 text-dark">
                         <FaBookOpen size={25} /> <span>Daily Reflection</span>
                     </Nav.Link>
                     <Nav.Link onClick={() => navigate('/appointments/book')} className="d-flex align-items-center gap-3 fs-5 text-dark">

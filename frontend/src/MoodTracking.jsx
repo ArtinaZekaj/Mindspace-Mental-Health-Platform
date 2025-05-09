@@ -1,12 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Button, Form } from 'react-bootstrap';
-import {
-  FaSmileBeam,
-  FaSmile,
-  FaMeh,
-  FaFrown,
-  FaSadTear
-} from 'react-icons/fa';
+import {FaSmileBeam,FaSmile,FaMeh,FaFrown,FaSadTear} from 'react-icons/fa';
 import Confetti from 'react-confetti';
 import useWindowSize from 'react-use/lib/useWindowSize';
 import { ToastContainer, toast } from 'react-toastify';
