@@ -13,7 +13,8 @@ class Appointment extends Model
         'psychologist_id',
         'date',
         'time',
-        'status'
+        'status',
+        'discussion'
     ];
 
     public function user() {

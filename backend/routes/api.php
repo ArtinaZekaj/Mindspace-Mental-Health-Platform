@@ -12,11 +12,21 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 //ROUTE PER SANCTUM middleware kontrollon në çdo kërkesë nëse ky token ekziston, eshte i vlefshem...
-Route::middleware('auth:sanctum')->get('/profile', function (Request $request) {
-    return response()->json([
-        'message' => 'Ky është profili i mbrojtur.',
-        'user' => $request->user()
-    ]);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/profile', function (Request $request) {
+        return response()->json([
+            'message' => 'Ky është profili i mbrojtur.',
+            'user' => $request->user()
+        ]);
+    });
+
+    Route::put('/profile/update', [AuthController::class, 'updateProfile']);
+    Route::delete('/profile/delete', [AuthController::class, 'destroyAccount']);
+    
+    // ✅ Route për dropdown e psikologëve në frontend
+    Route::get('/psychologists', function () {
+        return \App\Models\User::where('role', 'psychologist')->get(['id', 'name']);
+    });
 });
 
 //Routes per kontrollerin Reflection
@@ -26,6 +36,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/reflections/{id}', [ReflectionController::class, 'update']);
     Route::delete('/reflections/{id}', [ReflectionController::class, 'destroy']);
     Route::get('/reflections/summary', [ReflectionController::class, 'summary']);
+    Route::get('/reflections/summary/user/{id}', [ReflectionController::class, 'summaryForUser']);
+    Route::get('/admin/stats', [ReflectionController::class, 'adminStats']);
 });
 
 Route::middleware('auth:sanctum')->get('/me', function () {
@@ -50,6 +62,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/appointments/my', [AppointmentController::class, 'myAppointments']);
     Route::get('/appointments/schedule', [AppointmentController::class, 'psychologistSchedule']);
     Route::put('/appointments/{id}/status', [AppointmentController::class, 'updateStatus']);
+    Route::delete('/appointments/{id}', [AppointmentController::class, 'destroy']);
+    Route::get('/appointments/available-slots', [AppointmentController::class, 'availableSlots']);
+
 });
 
 Route::middleware('auth:sanctum')->get('/calendar/month', [CalendarController::class, 'monthOverview']);

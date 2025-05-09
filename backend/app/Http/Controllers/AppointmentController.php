@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Appointment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Carbon\Carbon;
+
 
 class AppointmentController extends Controller
 {
@@ -16,15 +18,17 @@ class AppointmentController extends Controller
         $request->validate([
             'psychologist_id' => 'required|exists:users,id',
             'date' => 'required|date|after_or_equal:today',
-            'time' => 'required'
+            'time' => 'required',
+            'discussion' => 'nullable|string'
         ]);
 
         $appointment = Appointment::create([
             'user_id' => Auth::id(),
             'psychologist_id' => $request->psychologist_id,
             'date' => $request->date,
-            'time' => $request->time,
-            'status' => 'pending'
+            'time' => Carbon::parse($request->time)->format('H:i:s'),
+            'status' => 'pending',
+            'discussion' => $request->discussion
         ]);
 
         return response()->json(['message' => 'Rezervimi u dërgua me sukses', 'data' => $appointment]);
@@ -51,20 +55,67 @@ class AppointmentController extends Controller
 
     // Admini aprovon/refuzon
     public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|in:approved,rejected'
+        ]);
+
+        $appointment = Appointment::findOrFail($id);
+
+        // 🔒 KONTROLLI I AUTORIZIMIT
+        $this->authorize('approve', $appointment);
+
+        $appointment->status = $request->status;
+        $appointment->save();
+
+        return response()->json(['message' => 'Statusi u përditësua']);
+    }
+
+    public function destroy($id)
+    {
+        $appointment = Appointment::where('user_id', Auth::id())
+            ->where('status', 'pending')
+            ->findOrFail($id);
+
+        $appointment->delete();
+
+        return response()->json(['message' => 'Takimi u anulua me sukses.']);
+    }
+
+    public function availableSlots(Request $request)
 {
     $request->validate([
-        'status' => 'required|in:approved,rejected'
+        'psychologist_id' => 'required|exists:users,id',
+        'date' => 'required|date'
     ]);
 
-    $appointment = Appointment::findOrFail($id);
+    $slotMap = [
+        '9:00 AM'  => '09:00:00',
+        '10:00 AM' => '10:00:00',
+        '11:00 AM' => '11:00:00',
+        '2:00 PM'  => '14:00:00',
+        '3:00 PM'  => '15:00:00',
+        '4:00 PM'  => '16:00:00',
+    ];
 
-    // 🔒 KONTROLLI I AUTORIZIMIT
-    $this->authorize('approve', $appointment);
+    $takenTimes = Appointment::where('psychologist_id', $request->psychologist_id)
+        ->where('date', $request->date)
+        ->whereIn('status', ['pending', 'approved'])
+        ->pluck('time')
+        ->map(fn($t) => \Carbon\Carbon::parse($t)->format('H:i:s'))
+        ->toArray();
 
-    $appointment->status = $request->status;
-    $appointment->save();
+    $available = [];
+    foreach ($slotMap as $label => $dbTime) {
+        if (!in_array($dbTime, $takenTimes)) {
+            $available[] = $label;
+        }
+    }
 
-    return response()->json(['message' => 'Statusi u përditësua']);
+    return response()->json(['slots' => $available]);
 }
+
+
+
 
 }
