@@ -3,10 +3,11 @@ import axios from 'axios';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { Container, Row, Col, Form, Button, Alert, Card } from 'react-bootstrap';
-import { FaClock, FaCalendarAlt, FaUser, FaHeart, FaShieldAlt, FaStar } from 'react-icons/fa';
+import { FaClock, FaCalendarAlt, FaUser, FaHeart, FaShieldAlt, FaStar, FaCommentDots } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { FaComments } from 'react-icons/fa';
 
-// ✅ Convert time from 12-hour to 24-hour
+
 function convertTo24Hour(time12h) {
     const [time, modifier] = time12h.split(' ');
     let [hours, minutes] = time.split(':');
@@ -214,7 +215,10 @@ function BookAppointment() {
             </Card>
 
             <Card className="p-4 shadow-sm">
-                <h5 className="fw-bold mb-3 text-center">Tell Us More</h5>
+                <h5 className="fw-bold mb-3 text-center text-dark d-flex justify-content-center align-items-center gap-2 fs-4">
+                    <FaComments className="text-danger" /> Tell Us More
+                </h5>
+
                 {message && <Alert variant="success">{message}</Alert>}
                 {error && <Alert variant="danger">{error}</Alert>}
                 <Form onSubmit={handleSubmit}>

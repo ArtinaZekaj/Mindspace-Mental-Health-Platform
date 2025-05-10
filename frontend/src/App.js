@@ -10,6 +10,7 @@ import PsychologistDashboard from './PsychologistDashboard';
 import MoodTracking from './MoodTracking';
 import DailyReflection from './DailyReflection';
 import BookAppointment from './BookAppointment';
+import MyAppointments from './MyAppointments';
 
 function App() {
   const token = localStorage.getItem('token');
@@ -37,6 +38,7 @@ function App() {
             <Route path="mood" element={<MoodTracking />} />
             <Route path="daily-reflection" element={<DailyReflection />} />
             <Route path="book-appointment" element={<BookAppointment />} />
+            <Route path="my-appointments" element={<MyAppointments />} />
           </Route>
         )}
 
