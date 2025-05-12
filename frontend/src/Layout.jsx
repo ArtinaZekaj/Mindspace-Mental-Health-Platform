@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Container, Nav } from 'react-bootstrap';
 import { FaBell, FaUser, FaHome, FaSmile, FaBookOpen, FaCalendarPlus, FaCalendarAlt, } from 'react-icons/fa';
+import { FaRegCalendarCheck } from 'react-icons/fa';
 
 function Layout() {
     const navigate = useNavigate();
@@ -34,9 +35,15 @@ function Layout() {
                     <Nav.Link onClick={() => navigate('/dashboard/my-appointments')} className="d-flex align-items-center gap-3 fs-5 text-dark">
                         <FaCalendarAlt size={25} /> <span>My Appointments</span>
                     </Nav.Link>
+                    <Nav.Link onClick={() => navigate('/dashboard/calendar')} className="d-flex align-items-center gap-3 fs-5 text-dark">
+                        <FaRegCalendarCheck size={25} /> <span>Calendar Personal</span>
+                    </Nav.Link>
                     <Nav.Link onClick={() => navigate('/profile')} className="d-flex align-items-center gap-3 fs-5 text-dark">
                         <FaUser size={25} /> <span>Profile</span>
                     </Nav.Link>
+                    
+
+
                 </Nav>
             </div>
 
