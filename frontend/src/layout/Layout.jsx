@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import { Container, Nav } from 'react-bootstrap';
 import { FaBell, FaUser, FaHome, FaSmile, FaBookOpen, FaCalendarPlus, FaCalendarAlt, } from 'react-icons/fa';
 import { FaRegCalendarCheck } from 'react-icons/fa';
+import { Dropdown } from 'react-bootstrap';
 
 function Layout() {
     const navigate = useNavigate();
@@ -10,11 +11,15 @@ function Layout() {
     return (
         <div className="d-flex" style={{ minHeight: '100vh' }}>
             {/* Sidebar */}
-            <div className="bg-white border-end d-flex flex-column px-4 py-4" style={{ width: '300px' }}>
-                <div className="d-flex justify-content-center mb-5">
-                    <h3 className="fw-bold">
+            <div className="bg-white border-end d-flex flex-column px-4 py-4" style={{ width: '310px' }}>
+                <div
+                    className="d-flex justify-content-center mb-5"
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => navigate('/dashboard')}
+                >
+                    <h3 className="fw-bold m-0">
                         <span style={{ color: 'rgb(39, 59, 37)' }}>Mind</span>
-                        <span style={{ color: 'rgb(116, 66, 97)' }}>Space</span>
+                        <span style={{ color: '#005bff' }}>Space</span>
                     </h3>
                 </div>
 
@@ -38,10 +43,10 @@ function Layout() {
                     <Nav.Link onClick={() => navigate('/dashboard/calendar')} className="d-flex align-items-center gap-3 fs-5 text-dark">
                         <FaRegCalendarCheck size={25} /> <span>Calendar Personal</span>
                     </Nav.Link>
-                    <Nav.Link onClick={() => navigate('/profile')} className="d-flex align-items-center gap-3 fs-5 text-dark">
+                    <Nav.Link onClick={() => navigate('/dashboard/profile')} className="d-flex align-items-center gap-3 fs-5 text-dark">
                         <FaUser size={25} /> <span>Profile</span>
                     </Nav.Link>
-                    
+
 
 
                 </Nav>
@@ -51,13 +56,33 @@ function Layout() {
             <div className="flex-grow-1 d-flex flex-column">
                 {/* Top Navbar */}
                 <div className="bg-white px-4 d-flex justify-content-end align-items-center" style={{ height: '80px', paddingBottom: '0', marginBottom: '0' }}>
-                    <FaBell className="me-4 fs-5 text-secondary" />
-                    <div className="d-flex align-items-center gap-2">
-                        <div className="bg-light rounded-circle p-2">
-                            <FaUser className="text-secondary fs-5" />
-                        </div>
-                        <strong className="fs-6 text-dark">{localStorage.getItem('name') || 'User'}</strong>
-                    </div>
+                    <Dropdown align="end">
+                        <Dropdown.Toggle
+                            variant="light"
+                            className="d-flex align-items-center gap-2 border-0 bg-transparent"
+                            style={{ boxShadow: 'none' }}
+                        >
+                            <div className="bg-light rounded-circle p-2">
+                                <FaUser className="text-secondary fs-5" />
+                            </div>
+                            <strong className="fs-6 text-dark mb-0">{localStorage.getItem('name') || 'User'}</strong>
+                        </Dropdown.Toggle>
+
+                        <Dropdown.Menu>
+                            <Dropdown.Item onClick={() => navigate('/dashboard/profile')}>View Profile</Dropdown.Item>
+                            <Dropdown.Divider />
+                            <Dropdown.Item
+                                onClick={() => {
+                                    localStorage.clear(); // Remove token + user info
+                                    navigate('/login');   // Redirect to login
+                                }}
+                                className="text-danger"
+                            >
+                                Log Out
+                            </Dropdown.Item>
+                        </Dropdown.Menu>
+                    </Dropdown>
+
                 </div>
 
                 {/* Content container */}
