@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+
 import Layout from './layout/Layout';
 import Login from './auth/Login';
 import Register from './auth/Register';
@@ -12,6 +13,7 @@ import BookAppointment from './users/BookAppointment';
 import MyAppointments from './users/MyAppointments';
 import CalendarPersonal from './users/CalendarPersonal';
 import Profile from './users/Profile';
+
 import PsychologistLayout from './layout/PsychologistLayout';
 import PsychologistDashboard from './psychologists/PsychologistDashboard';
 
@@ -19,23 +21,40 @@ function App() {
   const token = localStorage.getItem('token');
   const role = localStorage.getItem('role');
 
+  const getDashboardRouteByRole = (role) => {
+    switch (role) {
+      case 'admin':
+        return '/dashboard/admin';
+      case 'psychologist':
+        return '/dashboard/psychologist';
+      default:
+        return '/dashboard';
+    }
+  };
+
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Navigate to="/dashboard" />} />
-        {/* Public Routes */}
+        {/* Redirect based on role */}
+        <Route path="/" element={<Navigate to={getDashboardRouteByRole(role)} />} />
+
+        {/* Public routes */}
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
 
-        {/* Role-Based Routes */}
+        {/* Admin route */}
         {token && role === 'admin' && (
-          <Route path="/dashboard" element={<AdminDashboard />} />
+          <Route path="/dashboard/admin" element={<AdminDashboard />} />
         )}
 
-        {/* {token && role === 'psychologist' && (
-          <Route path="/dashboard" element={<PsychologistDashboard />} />
-        )} */}
+        {/* Psychologist route */}
+        {token && role === 'psychologist' && (
+          <Route path="/dashboard/psychologist" element={<PsychologistLayout />}>
+            <Route index element={<PsychologistDashboard />} />
+          </Route>
+        )}
 
+        {/* User route */}
         {token && role === 'user' && (
           <Route path="/dashboard" element={<Layout />}>
             <Route index element={<SimpleUserDashboard />} />
@@ -45,23 +64,15 @@ function App() {
             <Route path="my-appointments" element={<MyAppointments />} />
             <Route path="calendar" element={<CalendarPersonal />} />
             <Route path="profile" element={<Profile />} />
-
           </Route>
         )}
 
-        {/* Route për psikologun */}
-        {token && role === 'psychologist' && (
-          <Route path="/dashboard/psychologist" element={<PsychologistLayout />}>
-            <Route path="psychologist" element={<PsychologistDashboard />} />
-          </Route>
-        )}
-
-        {/* Redirect if no token */}
+        {/* Unauthorized fallback */}
         {!token && (
           <Route path="/dashboard" element={<Navigate to="/login" />} />
         )}
 
-        {/* Catch-All */}
+        {/* Catch all */}
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </Router>

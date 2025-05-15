@@ -29,16 +29,21 @@ function Login() {
       });
 
       const role = profile.data.role;
-      localStorage.setItem('role', role);
-      localStorage.setItem('name', profile.data.name);
+      const name = profile.data.name;
 
-  
-      if (role === 'psychologist') {
-        navigate('/dashboard/psychologist');
-      } else if (role === 'admin') {
-        navigate('/dashboard/admin');
-      } else {
-        navigate('/dashboard'); // user normal
+      localStorage.setItem('role', role);
+      localStorage.setItem('name', name);
+
+      // ✅ Force redirect to load correct dashboard cleanly
+      switch (role) {
+        case 'admin':
+          window.location.href = '/dashboard/admin';
+          break;
+        case 'psychologist':
+          window.location.href = '/dashboard/psychologist';
+          break;
+        default:
+          window.location.href = '/dashboard';
       }
 
     } catch (err) {
