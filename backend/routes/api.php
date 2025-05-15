@@ -1,36 +1,54 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use Illuminate\Http\Request;
-use App\Http\Controllers\ReflectionController;
-use App\Http\Controllers\AppointmentController;
-use App\Http\Controllers\CalendarController;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\User\MoodController;
+use App\Http\Controllers\User\ReflectionController;
+use App\Http\Controllers\User\AppointmentController as UserAppointmentController;
+use App\Http\Controllers\User\CalendarController;
+
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-//ROUTE PER SANCTUM middleware kontrollon në çdo kërkesë nëse ky token ekziston, eshte i vlefshem...
+
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/profile', function (Request $request) {
+
+    // Profile Routes
+    Route::get('/profile', fn(Request $request) => response()->json([
+        'message' => 'Ky është profili i mbrojtur.',
+        'user' => $request->user()
+    ]));
+    Route::put('/profile/update', [AuthController::class, 'updateProfile']);
+    Route::delete('/profile/delete', [AuthController::class, 'destroyAccount']);
+
+    // Get Logged-in User Info
+    Route::get('/me', function () {
+        $user = Auth::user();
+
+        $message = 'Welcome back!';
+        if ($user->role === 'admin') {
+            $message = 'Welcome, Admin! You have full access.';
+        } elseif ($user->role === 'psychologist') {
+            $message = 'Hello Psychologist! Ready to check student moods?';
+        }
+
         return response()->json([
-            'message' => 'Ky është profili i mbrojtur.',
-            'user' => $request->user()
+            'name' => $user->name,
+            'email' => $user->email,
+            'role' => $user->role,
+            'is_admin' => $user->role === 'admin',
+            'is_psychologist' => $user->role === 'psychologist',
+            'message' => $message,
         ]);
     });
 
-    Route::put('/profile/update', [AuthController::class, 'updateProfile']);
-    Route::delete('/profile/delete', [AuthController::class, 'destroyAccount']);
-    
-    // ✅ Route për dropdown e psikologëve në frontend
-    Route::get('/psychologists', function () {
-        return \App\Models\User::where('role', 'psychologist')->get(['id', 'name']);
-    });
-});
+    // Psychologist Dropdown
+    Route::get('/psychologists', fn() => \App\Models\User::where('role', 'psychologist')->get(['id', 'name']));
 
-//Routes per kontrollerin Reflection
-Route::middleware('auth:sanctum')->group(function () {
+    // Reflection Routes
     Route::get('/reflections', [ReflectionController::class, 'index']);
     Route::post('/reflections', [ReflectionController::class, 'store']);
     Route::put('/reflections/{id}', [ReflectionController::class, 'update']);
@@ -38,33 +56,31 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/reflections/summary', [ReflectionController::class, 'summary']);
     Route::get('/reflections/summary/user/{id}', [ReflectionController::class, 'summaryForUser']);
     Route::get('/admin/stats', [ReflectionController::class, 'adminStats']);
+    //Ky route merre te gjitha reflektimet, por edhe vetem reflektimet e 7 diteve te fundit per psikolog/e specifik/
+    Route::get('/psychologist/reflections', [ReflectionController::class, 'reflectionsFromMyPatients']);
+
+
+    // Mood Routes
+    Route::get('/moods', [MoodController::class, 'index']);
+    Route::post('/moods', [MoodController::class, 'store']);
+    Route::put('/moods/{id}', [MoodController::class, 'update']);
+    Route::delete('/moods/{id}', [MoodController::class, 'destroy']);
+    //Ky route merre te gjithe mood e pacienteve te nje psikologu te caktuar
+    Route::get('/psychologist/patient-moods', [MoodController::class, 'moodsFromPatients']);
+
+
+
+    // Appointment Routes
+    Route::post('/appointments', [UserAppointmentController::class, 'store']);
+    Route::get('/appointments/my', [UserAppointmentController::class, 'myAppointments']);
+    Route::delete('/appointments/{id}', [UserAppointmentController::class, 'destroy']);
+    Route::put('/appointments/{id}', [UserAppointmentController::class, 'update']);
+    Route::get('/appointments/available-slots', [UserAppointmentController::class, 'availableSlots']);
+    //Route posht do ti merre pacientat e nje psikologu te caktuar:
+    Route::get('/psychologist/appointments', [UserAppointmentController::class, 'psychologistAppointments']);
+
+    
+
+    // Calendar
+    Route::get('/calendar/month', [CalendarController::class, 'monthOverview']);
 });
-
-Route::middleware('auth:sanctum')->get('/me', function () {
-    $user = Auth::user();
-
-    return response()->json([
-        'name' => $user->name,
-        'email' => $user->email,
-        'role' => $user->role,
-        'is_admin' => $user->role === 'admin',
-        'is_psychologist' => $user->role === 'psychologist',
-        'message' => match ($user->role) {
-            'admin' => 'Welcome, Admin! You have full access.',
-            'psychologist' => 'Hello Psychologist! Ready to check student moods?',
-            default => 'Welcome back!',
-        }
-    ]);
-});
-
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/appointments', [AppointmentController::class, 'store']);
-    Route::get('/appointments/my', [AppointmentController::class, 'myAppointments']);
-    Route::get('/appointments/schedule', [AppointmentController::class, 'psychologistSchedule']);
-    Route::put('/appointments/{id}/status', [AppointmentController::class, 'updateStatus']);
-    Route::delete('/appointments/{id}', [AppointmentController::class, 'destroy']);
-    Route::get('/appointments/available-slots', [AppointmentController::class, 'availableSlots']);
-
-});
-
-Route::middleware('auth:sanctum')->get('/calendar/month', [CalendarController::class, 'monthOverview']);

@@ -1,20 +1,18 @@
 <?php
 
-// app/Models/Reflection.php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Reflection extends Model
+class Mood extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
-        'theme',    
-        'title',     
-        'content',
+        'user_id', 
+        'mood',
+        'note',
         'date'
     ];
 
