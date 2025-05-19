@@ -26,6 +26,7 @@ function PsychologistDashboard() {
     const [latestReflections, setLatestReflections] = useState([]);
 
 
+
     useEffect(() => {
         const fetchPatients = async () => {
             try {
@@ -43,6 +44,7 @@ function PsychologistDashboard() {
         fetchAppointmentsToday();
     }, []);
 
+    //Just Appointment for today 
     const fetchAppointmentsToday = async () => {
         try {
             const res = await axios.get('http://localhost:8000/api/psychologist/appointments', {
@@ -62,6 +64,7 @@ function PsychologistDashboard() {
         }
     };
 
+    //Top Mood from Patients
     useEffect(() => {
         const fetchTopMood = async () => {
             try {
@@ -103,6 +106,8 @@ function PsychologistDashboard() {
             console.error("Failed to fetch patients:", err);
         }
     };
+
+    //Last Mood from Patients
     useEffect(() => {
         const fetchPatientMoods = async () => {
             try {

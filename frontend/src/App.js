@@ -13,9 +13,9 @@ import BookAppointment from './users/BookAppointment';
 import MyAppointments from './users/MyAppointments';
 import CalendarPersonal from './users/CalendarPersonal';
 import Profile from './users/Profile';
-
 import PsychologistLayout from './layout/PsychologistLayout';
 import PsychologistDashboard from './psychologists/PsychologistDashboard';
+import PsychologistPatients from './psychologists/PsychologistPatients';
 
 function App() {
   const token = localStorage.getItem('token');
@@ -51,6 +51,7 @@ function App() {
         {token && role === 'psychologist' && (
           <Route path="/dashboard/psychologist" element={<PsychologistLayout />}>
             <Route index element={<PsychologistDashboard />} />
+            <Route path="patients" element={<PsychologistPatients />} />
           </Route>
         )}
 
