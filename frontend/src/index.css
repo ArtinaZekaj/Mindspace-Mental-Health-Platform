@@ -11,3 +11,67 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+/* Limit the calendar container */
+.calendar-wrapper {
+  max-width: 100%;
+  margin: auto;
+}
+
+/* Calendar container size fix */
+.react-calendar {
+  width: 100% !important;
+  border: none;
+  font-family: inherit;
+}
+
+/* Adjust spacing and tile layout */
+.react-calendar__month-view__days {
+  gap: 4px;
+}
+
+/* Prevent outer card from appearing too big */
+.react-calendar__tile {
+  padding: 8px 0;
+  min-height: 40px;
+  font-size: 14px;
+  border-radius: 8px;
+}
+
+/* Highlighted appointment date */
+.react-calendar__tile.highlight-date {
+  background-color: #d6336c !important;
+  color: #fff !important;
+  font-weight: 600;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.react-calendar__tile.highlight-date:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 0 2px rgba(214, 51, 108, 0.3);
+  cursor: pointer;
+}
+
+/* Header navigation cleanup */
+.react-calendar__navigation {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.react-calendar__navigation button {
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  font-weight: bold;
+  color: #d6336c;
+}
+
+/* Weekday styling */
+.react-calendar__month-view__weekdays__weekday {
+  text-align: center;
+  color: #6c757d;
+  font-size: 12px;
+  font-weight: 600;
+}

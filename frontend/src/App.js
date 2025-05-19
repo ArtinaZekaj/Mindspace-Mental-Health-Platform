@@ -16,6 +16,9 @@ import Profile from './users/Profile';
 import PsychologistLayout from './layout/PsychologistLayout';
 import PsychologistDashboard from './psychologists/PsychologistDashboard';
 import PsychologistPatients from './psychologists/PsychologistPatients';
+import PsychologistAppointments from './psychologists/PsychologistAppointments';
+import ReflectionsAndMoods from './psychologists/ReflectionsAndMoods';
+
 
 function App() {
   const token = localStorage.getItem('token');
@@ -52,6 +55,8 @@ function App() {
           <Route path="/dashboard/psychologist" element={<PsychologistLayout />}>
             <Route index element={<PsychologistDashboard />} />
             <Route path="patients" element={<PsychologistPatients />} />
+            <Route path="appointments" element={<PsychologistAppointments />} />
+            <Route path="reflections-moods" element={<ReflectionsAndMoods />} />
           </Route>
         )}
 

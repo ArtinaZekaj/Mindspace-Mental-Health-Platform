@@ -25,8 +25,6 @@ function PsychologistDashboard() {
     const [patientMoods, setPatientMoods] = useState({});
     const [latestReflections, setLatestReflections] = useState([]);
 
-
-
     useEffect(() => {
         const fetchPatients = async () => {
             try {

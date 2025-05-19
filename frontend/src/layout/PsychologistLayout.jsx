@@ -38,7 +38,7 @@ function PsychologistLayout() {
                     <Nav.Link onClick={() => navigate('/dashboard/psychologist/appointments')} className="d-flex align-items-center gap-3 fs-5 text-dark">
                         <FaCalendarAlt size={22} /> <span>Appointments</span>
                     </Nav.Link>
-                    <Nav.Link onClick={() => navigate('/dashboard/psychologist/reflections')} className="d-flex align-items-center gap-3 fs-5 text-dark">
+                    <Nav.Link onClick={() => navigate('/dashboard/psychologist/reflections-moods')} className="d-flex align-items-center gap-3 fs-5 text-dark">
                         <FaPen size={22} /> <span>Reflections</span>
                     </Nav.Link>
                     <Nav.Link onClick={() => navigate('/dashboard/psychologist/analytics')} className="d-flex align-items-center gap-3 fs-5 text-dark">
