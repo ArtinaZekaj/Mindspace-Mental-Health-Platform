@@ -1,0 +1,32 @@
+.reflections-container {
+  padding: 20px;
+}
+
+.reflections-header {
+  background: linear-gradient(90deg, #FFA726 0%, #FB8C00 100%);
+  color: white;
+  margin-bottom: 2rem;
+  border-radius: 10px;
+}
+
+.reflections-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.reflections-subtitle {
+  font-size: 0.95rem;
+  color: #f9f9f9;
+}
+
+.reflection-card {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: none;
+  margin-bottom: 1rem;
+}
+
+.icon {
+  font-size: 1.5rem;
+  color: white;
+}
