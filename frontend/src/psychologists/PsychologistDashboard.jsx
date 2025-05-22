@@ -1,4 +1,3 @@
-// IMPORTS
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Card, Row, Col, Badge, Table, Button, Form, Modal } from 'react-bootstrap';
@@ -24,6 +23,7 @@ function PsychologistDashboard() {
     const [myPatients, setMyPatients] = useState([]);
     const [patientMoods, setPatientMoods] = useState({});
     const [latestReflections, setLatestReflections] = useState([]);
+    const [patientNotes, setPatientNotes] = useState([]);
 
     useEffect(() => {
         const fetchPatients = async () => {
@@ -134,6 +134,7 @@ function PsychologistDashboard() {
 
         fetchMyPatients();
         fetchPatientMoods();
+        fetchPatientNotes();
     }, []);
 
     //Latest Reflections:
@@ -155,6 +156,16 @@ function PsychologistDashboard() {
         fetchLatestReflections();
     }, []);
 
+    const fetchPatientNotes = async () => {
+        try {
+            const res = await axios.get('http://localhost:8000/api/patient-notes', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setPatientNotes(res.data);
+        } catch (error) {
+            console.error('Error fetching patient notes:', error);
+        }
+    };
     const getMoodEmoji = (moodText) => {
         switch (moodText?.toLowerCase()) {
             case 'very happy':
@@ -399,28 +410,34 @@ function PsychologistDashboard() {
                 </Col>
 
                 <Col md={4}>
-                    <Card className="mb-4">
-                        <Card.Header className="d-flex justify-content-between align-items-center">
-                            <strong>Patient Notes</strong>
-                            <Button variant="link" size="sm">View All</Button>
-                        </Card.Header>
-                        <Card.Body style={{ maxHeight: '350px', overflowY: 'auto' }}>
-                            <div className="mb-3">
-                                <div className="fw-bold">Emma Wilson <span className="text-muted float-end">Today</span></div>
-                                <small>Patient showed significant progress with anxiety management...</small>
-                                <div><Button variant="link" size="sm">Edit Note</Button></div>
-                            </div>
-                            <div className="mb-3">
-                                <div className="fw-bold">Daniel Smith <span className="text-muted float-end">Yesterday</span></div>
-                                <small>Still exhibiting avoidance patterns when discussing childhood trauma...</small>
-                                <div><Button variant="link" size="sm">Edit Note</Button></div>
-                            </div>
-                        </Card.Body>
-                        <Card.Footer>
-                            <Button variant="outline-success" size="sm" className="w-100">Add New Note</Button>
-                        </Card.Footer>
-                    </Card>
-                </Col>
+  <Card className="mb-4 shadow-sm" style={{ borderRadius: '12px', backgroundColor: '#f9fafb' }}>
+    <Card.Header className="d-flex justify-content-between align-items-center" style={{ backgroundColor: '#5c6ac4', color: 'white', borderTopLeftRadius: '12px', borderTopRightRadius: '12px' }}>
+      <h5 className="mb-0">Patient Notes</h5>
+    </Card.Header>
+    <Card.Body style={{ maxHeight: '350px', overflowY: 'auto' }}>
+      {patientNotes.length === 0 ? (
+        <p className="text-center text-muted fst-italic">No notes found.</p>
+      ) : (
+        patientNotes.map(note => (
+          <div key={note.id} className="mb-4 p-3 rounded" style={{ backgroundColor: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.1)' }}>
+            <div className="d-flex justify-content-between align-items-center mb-1">
+              <span className="fw-semibold text-primary" style={{ fontSize: '0.95rem' }}>
+                {note.patient?.name || 'Unknown Patient'}
+              </span>
+              <small className="text-muted" style={{ fontSize: '0.8rem' }}>
+                {new Date(note.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+              </small>
+            </div>
+            <p className="mb-0 text-secondary" style={{ fontSize: '0.9rem', lineHeight: '1.3' }}>
+              {note.content.length > 120 ? note.content.slice(0, 120) + '...' : note.content}
+            </p>
+          </div>
+        ))
+      )}
+    </Card.Body>
+  </Card>
+</Col>
+
             </Row>
 
             {/* REFLECTIONS */}
@@ -429,7 +446,7 @@ function PsychologistDashboard() {
                     <Card>
                         <Card.Header className="d-flex justify-content-between align-items-center">
                             <strong>Latest Reflections</strong>
-                            <Button size="sm" variant="link">View All</Button>
+                            {/* <Button size="sm" variant="link">View All</Button> */}
                         </Card.Header>
                         <Card.Body>
                             {latestReflections.length === 0 ? (

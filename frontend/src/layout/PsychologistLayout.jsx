@@ -41,10 +41,7 @@ function PsychologistLayout() {
                     <Nav.Link onClick={() => navigate('/dashboard/psychologist/reflections-moods')} className="d-flex align-items-center gap-3 fs-5 text-dark">
                         <FaPen size={22} /> <span>Reflections</span>
                     </Nav.Link>
-                    <Nav.Link onClick={() => navigate('/dashboard/psychologist/analytics')} className="d-flex align-items-center gap-3 fs-5 text-dark">
-                        <FaChartBar size={22} /> <span>Analytics</span>
-                    </Nav.Link>
-                    <Nav.Link onClick={() => navigate('/dashboard/psychologist/notes')} className="d-flex align-items-center gap-3 fs-5 text-dark">
+                    <Nav.Link onClick={() => navigate('/dashboard/psychologist/patient-notes')} className="d-flex align-items-center gap-3 fs-5 text-dark">
                         <FaClipboard size={22} /> <span>Patient Notes</span>
                     </Nav.Link>
                     <Nav.Link onClick={handleLogout} className="d-flex align-items-center gap-3 fs-5 text-danger mt-3">

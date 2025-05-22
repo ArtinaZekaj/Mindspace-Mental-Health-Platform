@@ -18,6 +18,7 @@ import PsychologistDashboard from './psychologists/PsychologistDashboard';
 import PsychologistPatients from './psychologists/PsychologistPatients';
 import PsychologistAppointments from './psychologists/PsychologistAppointments';
 import ReflectionsAndMoods from './psychologists/ReflectionsAndMoods';
+import PatientNotes from './psychologists/PatientNotes';
 
 
 function App() {
@@ -57,6 +58,7 @@ function App() {
             <Route path="patients" element={<PsychologistPatients />} />
             <Route path="appointments" element={<PsychologistAppointments />} />
             <Route path="reflections-moods" element={<ReflectionsAndMoods />} />
+            <Route path="patient-notes" element={<PatientNotes />} />
           </Route>
         )}
 
