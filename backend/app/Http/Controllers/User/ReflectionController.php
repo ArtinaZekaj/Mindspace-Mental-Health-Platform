@@ -155,8 +155,14 @@ class ReflectionController extends Controller
             ->whereIn('user_id', $patientIds);
 
         // If weekly, apply date filter
-        if ($range === 'weekly') {
+        if ($range === 'today') {
+            $startDate = \Carbon\Carbon::today()->toDateString();
+            $query->whereDate('date', '=', $startDate);
+        } elseif ($range === 'weekly') {
             $startDate = \Carbon\Carbon::now()->subDays(7)->toDateString();
+            $query->where('date', '>=', $startDate);
+        } elseif ($range === 'monthly') {
+            $startDate = \Carbon\Carbon::now()->subMonth()->toDateString();
             $query->where('date', '>=', $startDate);
         }
 
@@ -164,24 +170,4 @@ class ReflectionController extends Controller
 
         return response()->json($reflections);
     }
-
-
-    // public function adminStats()
-    // {
-    //     $users = \App\Models\User::count();
-    //     $reflectionsThisMonth = \App\Models\Reflection::whereMonth('date', now()->month)->count();
-    //     $appointments = \App\Models\Appointment::count();
-    //     $appointmentsApproved = \App\Models\Appointment::where('status', 'approved')->count();
-    //     $appointmentsRejected = \App\Models\Appointment::where('status', 'rejected')->count();
-
-    //     return response()->json([
-    //         'users_total' => $users,
-    //         'reflections_this_month' => $reflectionsThisMonth,
-    //         'appointments' => [
-    //             'total' => $appointments,
-    //             'approved' => $appointmentsApproved,
-    //             'rejected' => $appointmentsRejected,
-    //         ]
-    //     ]);
-    // }
 }

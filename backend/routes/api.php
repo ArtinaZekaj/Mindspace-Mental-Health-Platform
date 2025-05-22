@@ -8,6 +8,7 @@ use App\Http\Controllers\User\MoodController;
 use App\Http\Controllers\User\ReflectionController;
 use App\Http\Controllers\User\AppointmentController as UserAppointmentController;
 use App\Http\Controllers\User\CalendarController;
+use App\Http\Controllers\psychologist\PatientNoteController;
 
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -47,6 +48,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Psychologist Dropdown
     Route::get('/psychologists', fn() => \App\Models\User::where('role', 'psychologist')->get(['id', 'name']));
+    //Psychologist PatientNote(po e krijoje endpoint ne kete menyre me 'apiResource' per te gjithe CRUD-in pa pasur nevoje ti shenoje 4 endpoint me index,store,update,destroy... ):
+    Route::apiResource('patient-notes', PatientNoteController::class);
+
 
     // Reflection Routes
     Route::get('/reflections', [ReflectionController::class, 'index']);
