@@ -9,6 +9,7 @@ use App\Http\Controllers\User\ReflectionController;
 use App\Http\Controllers\User\AppointmentController as UserAppointmentController;
 use App\Http\Controllers\User\CalendarController;
 use App\Http\Controllers\psychologist\PatientNoteController;
+use App\Http\Controllers\admin\AdminController;
 
 
 Route::post('/register', [AuthController::class, 'register']);
@@ -46,12 +47,7 @@ Route::middleware('auth:sanctum')->group(function () {
         ]);
     });
 
-    // Psychologist Dropdown
-    Route::get('/psychologists', fn() => \App\Models\User::where('role', 'psychologist')->get(['id', 'name']));
-    //Psychologist PatientNote(po e krijoje endpoint ne kete menyre me 'apiResource' per te gjithe CRUD-in pa pasur nevoje ti shenoje 4 endpoint me index,store,update,destroy... ):
-    Route::apiResource('patient-notes', PatientNoteController::class);
-
-
+    //Users Routes:
     // Reflection Routes
     Route::get('/reflections', [ReflectionController::class, 'index']);
     Route::post('/reflections', [ReflectionController::class, 'store']);
@@ -59,20 +55,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/reflections/{id}', [ReflectionController::class, 'destroy']);
     Route::get('/reflections/summary', [ReflectionController::class, 'summary']);
     Route::get('/reflections/summary/user/{id}', [ReflectionController::class, 'summaryForUser']);
-    Route::get('/admin/stats', [ReflectionController::class, 'adminStats']);
-    //Ky route merre te gjitha reflektimet, por edhe vetem reflektimet e 7 diteve te fundit per psikolog/e specifik/
-    Route::get('/psychologist/reflections', [ReflectionController::class, 'reflectionsFromMyPatients']);
-
+   
 
     // Mood Routes
     Route::get('/moods', [MoodController::class, 'index']);
     Route::post('/moods', [MoodController::class, 'store']);
     Route::put('/moods/{id}', [MoodController::class, 'update']);
     Route::delete('/moods/{id}', [MoodController::class, 'destroy']);
-    //Ky route merre te gjithe mood e pacienteve te nje psikologu te caktuar
-    Route::get('/psychologist/patient-moods', [MoodController::class, 'moodsFromPatients']);
-
-
+    
 
     // Appointment Routes
     Route::post('/appointments', [UserAppointmentController::class, 'store']);
@@ -80,11 +70,29 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/appointments/{id}', [UserAppointmentController::class, 'destroy']);
     Route::put('/appointments/{id}', [UserAppointmentController::class, 'update']);
     Route::get('/appointments/available-slots', [UserAppointmentController::class, 'availableSlots']);
-    //Route posht do ti merre pacientat e nje psikologu te caktuar:
-    Route::get('/psychologist/appointments', [UserAppointmentController::class, 'psychologistAppointments']);
-
-    
+   
 
     // Calendar
     Route::get('/calendar/month', [CalendarController::class, 'monthOverview']);
+
+
+    //Psychologists Route:
+    // Psychologist Dropdown
+    Route::get('/psychologists', fn() => \App\Models\User::where('role', 'psychologist')->get(['id', 'name']));
+    //Psychologist PatientNote(po e krijoje endpoint ne kete menyre me 'apiResource' per te gjithe CRUD-in pa pasur nevoje ti shenoje 4 endpoint me index,store,update,destroy... ):
+    Route::apiResource('patient-notes', PatientNoteController::class);
+    //Ky route merre te gjithe mood e pacienteve te nje psikologu te caktuar
+    Route::get('/psychologist/patient-moods', [MoodController::class, 'moodsFromPatients']);
+     //Ky route merre te gjitha reflektimet, por edhe vetem reflektimet e 7 diteve te fundit per psikolog/e specifik/
+    Route::get('/psychologist/reflections', [ReflectionController::class, 'reflectionsFromMyPatients']);
+    //Route posht do ti merre pacientat e nje psikologu te caktuar:
+    Route::get('/psychologist/appointments', [UserAppointmentController::class, 'psychologistAppointments']);
+
+
+    //Admin Routes:
+    Route::get('/admin/dashboard-stats', [AdminController::class, 'index']);
+    // Recent Appointments
+    Route::get('/admin/recent-appointments', [AdminController::class, 'recentAppointments']);
+    // Mood Statistics
+    Route::get('/admin/mood-statistics', [AdminController::class, 'moodStatistics']);
 });
