@@ -55,14 +55,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/reflections/{id}', [ReflectionController::class, 'destroy']);
     Route::get('/reflections/summary', [ReflectionController::class, 'summary']);
     Route::get('/reflections/summary/user/{id}', [ReflectionController::class, 'summaryForUser']);
-   
+
 
     // Mood Routes
     Route::get('/moods', [MoodController::class, 'index']);
     Route::post('/moods', [MoodController::class, 'store']);
     Route::put('/moods/{id}', [MoodController::class, 'update']);
     Route::delete('/moods/{id}', [MoodController::class, 'destroy']);
-    
+
 
     // Appointment Routes
     Route::post('/appointments', [UserAppointmentController::class, 'store']);
@@ -70,7 +70,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/appointments/{id}', [UserAppointmentController::class, 'destroy']);
     Route::put('/appointments/{id}', [UserAppointmentController::class, 'update']);
     Route::get('/appointments/available-slots', [UserAppointmentController::class, 'availableSlots']);
-   
+
 
     // Calendar
     Route::get('/calendar/month', [CalendarController::class, 'monthOverview']);
@@ -83,7 +83,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('patient-notes', PatientNoteController::class);
     //Ky route merre te gjithe mood e pacienteve te nje psikologu te caktuar
     Route::get('/psychologist/patient-moods', [MoodController::class, 'moodsFromPatients']);
-     //Ky route merre te gjitha reflektimet, por edhe vetem reflektimet e 7 diteve te fundit per psikolog/e specifik/
+    //Ky route merre te gjitha reflektimet, por edhe vetem reflektimet e 7 diteve te fundit per psikolog/e specifik/
     Route::get('/psychologist/reflections', [ReflectionController::class, 'reflectionsFromMyPatients']);
     //Route posht do ti merre pacientat e nje psikologu te caktuar:
     Route::get('/psychologist/appointments', [UserAppointmentController::class, 'psychologistAppointments']);
@@ -95,4 +95,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/admin/recent-appointments', [AdminController::class, 'recentAppointments']);
     // Mood Statistics
     Route::get('/admin/mood-statistics', [AdminController::class, 'moodStatistics']);
+    // Get all users with role 'user'
+    Route::get('/admin/patients', [AdminController::class, 'patientList']);
+    // Switch the status of a specific patient between 'active' and 'inactive'
+    Route::put('/admin/patients/{id}/toggle-status', [AdminController::class, 'toggleStatus']);
+    //Delete Patients:
+    Route::delete('/admin/patients/{id}', [AdminController::class, 'destroy']);
+    //Update Patients:
+    Route::put('/admin/patients/{id}', [AdminController::class, 'update']);
+    //Add Patients:
+    Route::post('/admin/patients', [AdminController::class, 'store']);
+    //Get Psychologist 
+    Route::get('/admin/psychologist', [AdminController::class, 'psychologistList']);
+    //Switch status for psychologist
+    Route::put('/admin/psychologist/{id}/toggle-status', [AdminController::class, 'toggleStatusPsychologist']);
 });
