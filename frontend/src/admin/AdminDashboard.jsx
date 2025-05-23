@@ -82,54 +82,49 @@ const AdminDashboard = () => {
             {/* Stats Cards */}
             <Row className="mb-4 g-4">
                 <Col md={3}>
-                    <Card className="shadow-sm border-0 text-dark" style={{ background: 'linear-gradient(135deg, #d4fc79, #96e6a1)' }}>
-                        <Card.Body>
-                            <div className="d-flex justify-content-between align-items-center mb-2">
-                                <Card.Title className="fw-bold mb-0">Total Users</Card.Title>
-                                <FaUsers size={24} />
+                    <Card className="shadow-sm border-0 text-dark" style={{ background: 'linear-gradient(135deg, #d4fc79, #96e6a1)', minHeight: '150px' }}>
+                        <Card.Body className="p-4">
+                            <div className="d-flex justify-content-between align-items-center mb-3">
+                                <Card.Title className="fw-bold mb-0" style={{ fontSize: '1.3rem' }}>Total Users</Card.Title>
+                                <FaUsers size={32} />
                             </div>
-                            <h3 className="fw-bold">{totalUsers}</h3>
-                            <p className="text-success">↑ 12% growth</p>
+                            <h3 className="fw-bold" style={{ fontSize: '2.2rem' }}>{totalUsers}</h3>
                         </Card.Body>
                     </Card>
                 </Col>
 
                 <Col md={3}>
-                    <Card className="shadow-sm border-0 text-dark" style={{ background: 'linear-gradient(135deg, #fbc2eb, #a6c1ee)' }}>
-                        <Card.Body>
-                            <div className="d-flex justify-content-between align-items-center mb-2">
-                                <Card.Title className="fw-bold mb-0">Psychologists</Card.Title>
-                                <FaUserMd size={24} />
+                    <Card className="shadow-sm border-0 text-dark" style={{ background: 'linear-gradient(135deg, #fbc2eb, #a6c1ee)', minHeight: '150px' }}>
+                        <Card.Body className="p-4">
+                            <div className="d-flex justify-content-between align-items-center mb-3">
+                                <Card.Title className="fw-bold mb-0" style={{ fontSize: '1.3rem' }}>Psychologists</Card.Title>
+                                <FaUserMd size={32} />
                             </div>
-                            <h3 className="fw-bold">{totalPsychologists}</h3>
-                            <p className="text-success">↑ 5% growth</p>
-                        </Card.Body>
-                    </Card>
-                </Col>
-
-
-                <Col md={3}>
-                    <Card className="shadow-sm border-0 text-dark" style={{ background: 'linear-gradient(135deg, #fddb92, #d1fdff)' }}>
-                        <Card.Body>
-                            <div className="d-flex justify-content-between align-items-center mb-2">
-                                <Card.Title className="fw-bold mb-0">Appointments Today</Card.Title>
-                                <FaCalendarAlt size={24} />
-                            </div>
-                            <h3 className="fw-bold">{appointmentsToday}</h3>
-                            <p className="text-success">↑ 8% increase</p>
+                            <h3 className="fw-bold" style={{ fontSize: '2.2rem' }}>{totalPsychologists}</h3>
                         </Card.Body>
                     </Card>
                 </Col>
 
                 <Col md={3}>
-                    <Card className="shadow-sm border-0 text-dark" style={{ background: 'linear-gradient(135deg, #f6d365, #fda085)' }}>
-                        <Card.Body>
-                            <div className="d-flex justify-content-between align-items-center mb-2">
-                                <Card.Title className="fw-bold mb-0">This Month</Card.Title>
-                                <FaChartLine size={24} />
+                    <Card className="shadow-sm border-0 text-dark" style={{ background: 'linear-gradient(135deg, #fddb92, #d1fdff)', minHeight: '150px' }}>
+                        <Card.Body className="p-4">
+                            <div className="d-flex justify-content-between align-items-center mb-3">
+                                <Card.Title className="fw-bold mb-0" style={{ fontSize: '1.3rem' }}>Appointments Today</Card.Title>
+                                <FaCalendarAlt size={32} />
                             </div>
-                            <h3 className="fw-bold">{appointmentsThisMonth}</h3>
-                            <p className="text-danger">↓ 3% decline</p>
+                            <h3 className="fw-bold" style={{ fontSize: '2.2rem' }}>{appointmentsToday}</h3>
+                        </Card.Body>
+                    </Card>
+                </Col>
+
+                <Col md={3}>
+                    <Card className="shadow-sm border-0 text-dark" style={{ background: 'linear-gradient(135deg, #f6d365, #fda085)', minHeight: '150px' }}>
+                        <Card.Body className="p-4">
+                            <div className="d-flex justify-content-between align-items-center mb-3">
+                                <Card.Title className="fw-bold mb-0" style={{ fontSize: '1.3rem' }}>This Month</Card.Title>
+                                <FaChartLine size={32} />
+                            </div>
+                            <h3 className="fw-bold" style={{ fontSize: '2.2rem' }}>{appointmentsThisMonth}</h3>
                         </Card.Body>
                     </Card>
                 </Col>

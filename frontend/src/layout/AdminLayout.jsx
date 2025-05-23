@@ -32,10 +32,10 @@ function AdminLayout() {
                     <Nav.Link onClick={() => navigate('/dashboard/admin')} className="d-flex align-items-center gap-3 fs-5 text-dark">
                         <FaHome size={22} /> <span>Dashboard</span>
                     </Nav.Link>
-                    <Nav.Link onClick={() => navigate('/dashboard/psychologist/patients')} className="d-flex align-items-center gap-3 fs-5 text-dark">
+                    <Nav.Link onClick={() => navigate('/dashboard/admin/patients')} className="d-flex align-items-center gap-3 fs-5 text-dark">
                         <FaUserFriends size={22} /> <span>Patients</span>
                     </Nav.Link>
-                    <Nav.Link onClick={() => navigate('/dashboard/psychologist/reflections-moods')} className="d-flex align-items-center gap-3 fs-5 text-dark">
+                    <Nav.Link onClick={() => navigate('/dashboard/admin/psychologist')} className="d-flex align-items-center gap-3 fs-5 text-dark">
                         <FaStethoscope  size={22} /> <span>Psychologists</span>
                     </Nav.Link>
                     <Nav.Link onClick={() => navigate('/dashboard/psychologist/appointments')} className="d-flex align-items-center gap-3 fs-5 text-dark">
@@ -47,8 +47,6 @@ function AdminLayout() {
                     <Nav.Link onClick={handleLogout} className="d-flex align-items-center gap-3 fs-5 text-danger mt-3">
                         <FaSignOutAlt size={22} /> <span>Log out</span>
                     </Nav.Link>
-                    
-
                 </Nav>
             </div>
 
