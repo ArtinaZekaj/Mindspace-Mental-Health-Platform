@@ -19,7 +19,7 @@ import PsychologistPatients from './psychologists/PsychologistPatients';
 import PsychologistAppointments from './psychologists/PsychologistAppointments';
 import ReflectionsAndMoods from './psychologists/ReflectionsAndMoods';
 import PatientNotes from './psychologists/PatientNotes';
-
+import AdminLayout from './layout/AdminLayout';
 
 function App() {
   const token = localStorage.getItem('token');
@@ -48,7 +48,9 @@ function App() {
 
         {/* Admin route */}
         {token && role === 'admin' && (
-          <Route path="/dashboard/admin" element={<AdminDashboard />} />
+          <Route path="/dashboard/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboard />} />
+          </Route>
         )}
 
         {/* Psychologist route */}

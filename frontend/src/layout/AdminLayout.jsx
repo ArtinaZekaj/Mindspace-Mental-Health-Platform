@@ -1,12 +1,12 @@
 import React from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
-import {FaUserFriends,FaCalendarAlt,FaPen,FaSignOutAlt,FaChartBar,FaHome,FaSearch,FaClipboard} from 'react-icons/fa';
+import {FaUserFriends,FaCalendarAlt,FaPen,FaSignOutAlt,FaChartBar,FaHome,FaSearch,FaClipboard, FaRegCalendarCheck, FaStethoscope } from 'react-icons/fa';
 import { Nav } from 'react-bootstrap';
 import { useState } from 'react';
 
-function PsychologistLayout() {
+function AdminLayout() {
     const navigate = useNavigate();
-    const name = localStorage.getItem('name') || 'Psychologist';
+    const name = localStorage.getItem('name') || 'admin';
     
     const initials = name
         .split(' ')
@@ -29,20 +29,20 @@ function PsychologistLayout() {
                 </h3>
 
                 <Nav className="flex-column gap-3">
-                    <Nav.Link onClick={() => navigate('/dashboard/psychologist')} className="d-flex align-items-center gap-3 fs-5 text-dark">
+                    <Nav.Link onClick={() => navigate('/dashboard/admin')} className="d-flex align-items-center gap-3 fs-5 text-dark">
                         <FaHome size={22} /> <span>Dashboard</span>
                     </Nav.Link>
                     <Nav.Link onClick={() => navigate('/dashboard/psychologist/patients')} className="d-flex align-items-center gap-3 fs-5 text-dark">
                         <FaUserFriends size={22} /> <span>Patients</span>
                     </Nav.Link>
+                    <Nav.Link onClick={() => navigate('/dashboard/psychologist/reflections-moods')} className="d-flex align-items-center gap-3 fs-5 text-dark">
+                        <FaStethoscope  size={22} /> <span>Psychologists</span>
+                    </Nav.Link>
                     <Nav.Link onClick={() => navigate('/dashboard/psychologist/appointments')} className="d-flex align-items-center gap-3 fs-5 text-dark">
                         <FaCalendarAlt size={22} /> <span>Appointments</span>
                     </Nav.Link>
-                    <Nav.Link onClick={() => navigate('/dashboard/psychologist/reflections-moods')} className="d-flex align-items-center gap-3 fs-5 text-dark">
-                        <FaPen size={22} /> <span>Reflections</span>
-                    </Nav.Link>
                     <Nav.Link onClick={() => navigate('/dashboard/psychologist/patient-notes')} className="d-flex align-items-center gap-3 fs-5 text-dark">
-                        <FaClipboard size={22} /> <span>Patient Notes</span>
+                        <FaRegCalendarCheck size={22} /> <span>Calendar</span>
                     </Nav.Link>
                     <Nav.Link onClick={handleLogout} className="d-flex align-items-center gap-3 fs-5 text-danger mt-3">
                         <FaSignOutAlt size={22} /> <span>Log out</span>
@@ -92,4 +92,4 @@ function PsychologistLayout() {
     );
 }
 
-export default PsychologistLayout;
+export default AdminLayout;
