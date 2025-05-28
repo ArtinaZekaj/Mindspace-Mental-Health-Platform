@@ -9,6 +9,7 @@ use App\Models\Appointment;
 use Carbon\Carbon;
 use App\Models\Mood;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -97,7 +98,7 @@ class AdminController extends Controller
             'email' => $validated['email'],
             'role' => 'user',
             'status' => 'active',
-            'password' => bcrypt('default123') // ose gjenero një të rastësishëm
+            'password' => bcrypt('default123')
         ]);
 
         return response()->json($user, 201);
@@ -136,6 +137,124 @@ class AdminController extends Controller
         return response()->json(['message' => 'Patient updated successfully.']);
     }
 
-   
+    // Get all psychologists with patients count
+    public function psychologistList()
+    {
+        $psychologists = User::where('role', 'psychologist')
+            ->select('id', 'name', 'email', 'status')
+            ->get();
 
+        $appointments = Appointment::select('psychologist_id', 'user_id')
+            ->distinct()
+            ->get();
+
+        $grouped = $appointments->groupBy('psychologist_id')->map(function ($group) {
+            return $group->pluck('user_id')->unique()->count();
+        });
+
+        foreach ($psychologists as $p) {
+            $p->patients_count = $grouped[$p->id] ?? 0;
+        }
+
+        return $psychologists;
+    }
+
+
+    // Toggle psychologist status
+    public function togglePsychologistStatus($id)
+    {
+        $user = User::where('role', 'psychologist')->findOrFail($id);
+        $user->status = $user->status === 'active' ? 'inactive' : 'active';
+        $user->save();
+
+        return response()->json(['message' => 'Status updated', 'status' => $user->status]);
+    }
+
+    //Add Psychologist:
+    public function storePsychologist(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email',
+        ]);
+
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'role' => 'psychologist',
+            'status' => 'active',
+            'password' => bcrypt('default123')
+        ]);
+
+        return response()->json($user, 201);
+    }
+    //Update Psychologist
+    public function updatePsychologist(Request $request, $id)
+    {
+        $user = User::where('role', 'psychologist')->findOrFail($id);
+
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email,' . $id,
+        ]);
+
+        $user->update($request->only('name', 'email'));
+
+        return response()->json(['message' => 'Psychologist updated successfully.']);
+    }
+    //Delete Psychologist
+    public function destroyPsychologist($id)
+    {
+        $user = User::where('role', 'psychologist')->findOrFail($id);
+        $user->delete();
+
+        return response()->json(['message' => 'Psychologist deleted successfully.']);
+    }
+
+    // Get all appointments with user and psychologist info
+    public function allAppointments()
+    {
+        $appointments = Appointment::with(['user:id,name', 'psychologist:id,name'])
+            ->orderBy('date', 'desc')
+            ->orderBy('time')
+            ->get();
+
+        return response()->json($appointments);
+    }
+
+    //Update status, approved or canceled:
+    public function updateAppointmentStatus(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'status' => 'required|in:pending,approved,rejected'
+        ]);
+
+        $appointment = Appointment::findOrFail($id);
+        $appointment->status = $validated['status'];
+        $appointment->save();
+
+        return response()->json(['message' => 'Status updated successfully.']);
+    }
+
+    //Add Appointment:
+    public function storeAdminAppointment(Request $request)
+    {
+        $validated = $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'psychologist_id' => 'required|exists:users,id',
+            'date' => 'required|date',
+            'time' => 'required',
+            'status' => 'in:pending,approved,rejected',
+        ]);
+
+        $appointment = Appointment::create([
+            'user_id' => $validated['user_id'],
+            'psychologist_id' => $validated['psychologist_id'],
+            'date' => $validated['date'],
+            'time' => $validated['time'],
+            'status' => $validated['status'] ?? 'pending',
+        ]);
+
+        return response()->json($appointment, 201);
+    }
 }

@@ -106,7 +106,19 @@ Route::middleware('auth:sanctum')->group(function () {
     //Add Patients:
     Route::post('/admin/patients', [AdminController::class, 'store']);
     //Get Psychologist 
-    Route::get('/admin/psychologist', [AdminController::class, 'psychologistList']);
+    Route::get('/admin/psychologists', [AdminController::class, 'psychologistList']);
     //Switch status for psychologist
-    Route::put('/admin/psychologist/{id}/toggle-status', [AdminController::class, 'toggleStatusPsychologist']);
+    Route::put('/admin/psychologists/{id}/toggle-status', [AdminController::class, 'togglePsychologistStatus']);
+    //Add Psychologist:
+    Route::post('/admin/psychologists', [AdminController::class, 'storePsychologist']);
+    //Update Psychologist
+    Route::put('/admin/psychologists/{id}', [AdminController::class, 'updatePsychologist']);
+    //Delete Psychologist
+    Route::delete('/admin/psychologists/{id}', [AdminController::class, 'destroyPsychologist']);
+    // Get all appointments with user and psychologist info
+    Route::get('/admin/appointments', [AdminController::class, 'allAppointments']);
+    //Update status, approved or canceled:
+    Route::put('/admin/appointments/{id}/status', [AdminController::class, 'updateAppointmentStatus']);
+    //Add Appointment:
+    Route::post('/admin/appointments', [AdminController::class, 'storeAdminAppointment']);
 });
