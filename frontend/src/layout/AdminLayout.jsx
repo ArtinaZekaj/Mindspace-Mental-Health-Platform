@@ -38,7 +38,7 @@ function AdminLayout() {
                     <Nav.Link onClick={() => navigate('/dashboard/admin/psychologist')} className="d-flex align-items-center gap-3 fs-5 text-dark">
                         <FaStethoscope  size={22} /> <span>Psychologists</span>
                     </Nav.Link>
-                    <Nav.Link onClick={() => navigate('/dashboard/psychologist/appointments')} className="d-flex align-items-center gap-3 fs-5 text-dark">
+                    <Nav.Link onClick={() => navigate('/dashboard/admin/appointments')} className="d-flex align-items-center gap-3 fs-5 text-dark">
                         <FaCalendarAlt size={22} /> <span>Appointments</span>
                     </Nav.Link>
                     <Nav.Link onClick={() => navigate('/dashboard/psychologist/patient-notes')} className="d-flex align-items-center gap-3 fs-5 text-dark">

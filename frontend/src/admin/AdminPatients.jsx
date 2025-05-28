@@ -15,7 +15,7 @@ const AdminPatients = () => {
     const [showAddModal, setShowAddModal] = useState(false);
     const [newPatient, setNewPatient] = useState({ name: '', email: '' });
 
-
+    //Fetch Patients:
     const fetchPatients = async () => {
         const token = localStorage.getItem('token');
         const res = await axios.get('http://localhost:8000/api/admin/patients', {
@@ -24,7 +24,7 @@ const AdminPatients = () => {
         setPatients(res.data);
         setFiltered(res.data);
     };
-
+    //Switch status active/inactive
     const toggleStatus = async (id) => {
         const token = localStorage.getItem('token');
         await axios.put(`http://localhost:8000/api/admin/patients/${id}/toggle-status`, {}, {
@@ -37,6 +37,7 @@ const AdminPatients = () => {
         fetchPatients();
     }, []);
 
+    //Filter with name , status ...
     useEffect(() => {
         let result = [...patients];
 
@@ -161,7 +162,7 @@ const AdminPatients = () => {
                 </thead>
                 <tbody>
                     {filtered.map(p => (
-                        <tr key={p.id} style={{ height: '70px' }}> {/* Kjo shton hapsirë vertikale */}
+                        <tr key={p.id} style={{ height: '70px' }}>
                             <td>
                                 <div className="d-flex align-items-center gap-3">
                                     <div
@@ -169,7 +170,7 @@ const AdminPatients = () => {
                                         style={{
                                             width: 40,
                                             height: 40,
-                                            backgroundColor: '#0d6efd',
+                                            backgroundColor: '#2dd4bf',
                                             fontSize: 14,
                                         }}
                                     >

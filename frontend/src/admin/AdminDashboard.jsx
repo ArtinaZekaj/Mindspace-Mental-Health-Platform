@@ -121,7 +121,9 @@ const AdminDashboard = () => {
                     <Card className="shadow-sm border-0 text-dark" style={{ background: 'linear-gradient(135deg, #f6d365, #fda085)', minHeight: '150px' }}>
                         <Card.Body className="p-4">
                             <div className="d-flex justify-content-between align-items-center mb-3">
-                                <Card.Title className="fw-bold mb-0" style={{ fontSize: '1.3rem' }}>This Month</Card.Title>
+                                <Card.Title className="fw-bold mb-0" style={{ fontSize: '1.3rem' }}>
+                                    Appointments This Month
+                                </Card.Title>
                                 <FaChartLine size={32} />
                             </div>
                             <h3 className="fw-bold" style={{ fontSize: '2.2rem' }}>{appointmentsThisMonth}</h3>
@@ -161,9 +163,8 @@ const AdminDashboard = () => {
                                                 <td>
                                                     <span className={`badge ${appt.status === 'approved' ? 'bg-success' :
                                                         appt.status === 'pending' ? 'bg-warning text-dark' :
-                                                            'bg-danger'
-                                                        }`}>
-                                                        {appt.status}
+                                                            'bg-danger'}`}>
+                                                        {appt.status === 'rejected' ? 'Canceled' : appt.status}
                                                     </span>
                                                 </td>
                                             </tr>
