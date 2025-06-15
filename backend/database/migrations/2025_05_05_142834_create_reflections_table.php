@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('title')->nullable();
             $table->text('content');
-            $table->string('mood'); // p.sh. calm, sad, happy...
+            $table->string('mood');
             $table->timestamps();
         });
     }

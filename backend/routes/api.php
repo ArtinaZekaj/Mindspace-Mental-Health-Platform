@@ -121,4 +121,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/admin/appointments/{id}/status', [AdminController::class, 'updateAppointmentStatus']);
     //Add Appointment:
     Route::post('/admin/appointments', [AdminController::class, 'storeAdminAppointment']);
+    //Profile Admin
+    
+
 });
