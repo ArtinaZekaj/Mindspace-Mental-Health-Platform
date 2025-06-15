@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { Card, Row, Col, Button, Table, Badge } from 'react-bootstrap';
+import { Card, Row, Col, Badge, Table, Button, Form, Modal } from 'react-bootstrap';
+
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import {
@@ -8,13 +9,19 @@ import {
 } from 'react-icons/fa';
 import '../index.css';
 
-
 function PsychologistAppointments() {
     const [allAppointments, setAllAppointments] = useState([]);
     const [selectedRange, setSelectedRange] = useState('today');
     const [stats, setStats] = useState({ today: 0, tomorrow: 0, week: 0, month: 0 });
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [appointmentDates, setAppointmentDates] = useState([]);
+    const [selectedAppointment, setSelectedAppointment] = useState(null);
+    const [showViewModal, setShowViewModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false);
+    const [showCancelModal, setShowCancelModal] = useState(false);
+    const [newDate, setNewDate] = useState('');
+    const [newTime, setNewTime] = useState('');
+
 
     useEffect(() => {
         const fetchAppointments = async () => {
@@ -102,14 +109,25 @@ function PsychologistAppointments() {
     const getInitials = (name) => name.split(' ').map(n => n[0]).join('').toUpperCase();
 
     const getStatusBadge = (status) => {
-        const variant = {
-            Completed: { bg: 'success', icon: <FaCheckCircle className="me-1" /> },
-            Confirmed: { bg: 'primary', icon: <FaCheckCircle className="me-1" /> },
-            Pending: { bg: 'warning', icon: <FaCheckCircle className="me-1" /> }
-        }[status] || { bg: 'secondary', icon: '' };
+        const normalized = status.toLowerCase();
 
-        return <Badge bg={variant.bg} className="d-inline-flex align-items-center">{variant.icon}{status}</Badge>;
+        const map = {
+            pending: { label: 'Pending', bg: 'warning' },
+            approved: { label: 'Approved', bg: 'success' },
+            confirmed: { label: 'Confirmed', bg: 'primary' },
+            completed: { label: 'Completed', bg: 'success' },
+            rejected: { label: 'Canceled', bg: 'danger' }
+        };
+
+        const badge = map[normalized] || { label: status, bg: 'secondary' };
+
+        return (
+            <Badge bg={badge.bg} className="d-inline-flex align-items-center">
+                {badge.label}
+            </Badge>
+        );
     };
+
 
     const filteredAppointments = useMemo(() => {
         const todayStr = new Date().toISOString().slice(0, 10);
@@ -135,12 +153,59 @@ function PsychologistAppointments() {
                 date: new Date(appt.date).toLocaleDateString('en-GB'),
                 time: formatTime(appt.time),
                 duration: '60 min',
-                status: capitalize(appt.status)
+                status: appt.status
             }));
     }, [allAppointments, selectedRange]);
 
     const handleRangeClick = (range) => {
         setSelectedRange(range);
+    };
+
+    const handleView = (appt) => {
+        setSelectedAppointment(appt);
+        setShowViewModal(true);
+    };
+
+    const handleEdit = (appt) => {
+        setSelectedAppointment(appt);
+        setNewDate(appt.date);
+        setNewTime(appt.time?.slice(0, 5));
+        setShowEditModal(true);
+    };
+
+    const handleCancel = (appt) => {
+        setSelectedAppointment(appt);
+        setShowCancelModal(true);
+    };
+
+    const submitEdit = async () => {
+        try {
+            await fetch(`http://localhost:8000/api/appointments/${selectedAppointment.id}`, {
+                method: 'PUT',
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ date: newDate, time: newTime })
+            });
+            setShowEditModal(false);
+            window.location.reload();
+        } catch {
+            alert('Failed to update appointment.');
+        }
+    };
+
+    const confirmCancel = async () => {
+        try {
+            await fetch(`http://localhost:8000/api/appointments/${selectedAppointment.id}`, {
+                method: 'DELETE',
+                headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+            });
+            setShowCancelModal(false);
+            window.location.reload();
+        } catch {
+            alert('Failed to cancel appointment.');
+        }
     };
 
     return (
@@ -189,9 +254,9 @@ function PsychologistAppointments() {
                                     <th>Date</th>
                                     <th>Time</th>
                                     <th>Status</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
-
                             <tbody>
                                 {filteredAppointments.map(appt => (
                                     <tr key={appt.id}>
@@ -204,13 +269,17 @@ function PsychologistAppointments() {
                                                 {appt.name}
                                             </div>
                                         </td>
-
                                         <td>{appt.date}</td>
                                         <td>
                                             {appt.time}
                                             <div className="text-muted" style={{ fontSize: '0.8rem' }}>{appt.duration}</div>
                                         </td>
                                         <td>{getStatusBadge(appt.status)}</td>
+                                        <td>
+                                            <Button size="sm" variant="outline-info" onClick={() => handleView(appt)}>View</Button>{' '}
+                                            <Button size="sm" variant="outline-primary" onClick={() => handleEdit(appt)}>Edit</Button>{' '}
+                                            <Button size="sm" variant="outline-danger" onClick={() => handleCancel(appt)}>Cancel</Button>
+                                        </td>
                                     </tr>
                                 ))}
                             </tbody>
@@ -240,8 +309,52 @@ function PsychologistAppointments() {
                         </Card.Body>
                     </Card>
                 </Col>
-
             </Row>
+            <Modal show={showViewModal} onHide={() => setShowViewModal(false)}>
+                <Modal.Header closeButton><Modal.Title>Appointment Details</Modal.Title></Modal.Header>
+                <Modal.Body>
+                    {selectedAppointment && (
+                        <>
+                            <p><strong>Patient:</strong> {selectedAppointment.name}</p>
+                            <p><strong>Date:</strong> {selectedAppointment.date}</p>
+                            <p><strong>Time:</strong> {selectedAppointment.time}</p>
+                        </>
+                    )}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowViewModal(false)}>Close</Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={showEditModal} onHide={() => setShowEditModal(false)}>
+                <Modal.Header closeButton><Modal.Title>Edit Appointment</Modal.Title></Modal.Header>
+                <Modal.Body>
+                    <Form.Group>
+                        <Form.Label>Date</Form.Label>
+                        <Form.Control type="date" value={newDate} onChange={(e) => setNewDate(e.target.value)} />
+                    </Form.Group>
+                    <Form.Group className="mt-2">
+                        <Form.Label>Time</Form.Label>
+                        <Form.Control type="time" value={newTime} onChange={(e) => setNewTime(e.target.value)} />
+                    </Form.Group>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowEditModal(false)}>Cancel</Button>
+                    <Button variant="primary" onClick={submitEdit}>Save Changes</Button>
+                </Modal.Footer>
+            </Modal>
+
+            <Modal show={showCancelModal} onHide={() => setShowCancelModal(false)}>
+                <Modal.Header closeButton><Modal.Title>Confirm Cancellation</Modal.Title></Modal.Header>
+                <Modal.Body>
+                    Are you sure you want to cancel this appointment with <strong>{selectedAppointment?.name}</strong>?
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setShowCancelModal(false)}>No</Button>
+                    <Button variant="danger" onClick={confirmCancel}>Yes, Cancel</Button>
+                </Modal.Footer>
+            </Modal>
+
         </div>
     );
 }

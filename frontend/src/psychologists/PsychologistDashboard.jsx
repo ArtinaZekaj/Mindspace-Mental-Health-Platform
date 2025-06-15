@@ -331,7 +331,14 @@ function PsychologistDashboard() {
                                     <tr key={idx}>
                                         <td>{appt.user?.name || 'Unknown'}</td>
                                         <td>{appt.time?.slice(0, 5)}<br /><small>60 min</small></td>
-                                        <td><Badge bg={appt.status === 'pending' ? 'warning' : 'success'}>{appt.status}</Badge></td>
+                                        <td><Badge bg={
+                                            appt.status === 'pending' ? 'warning' :
+                                                appt.status === 'approved' ? 'success' :
+                                                    'danger'
+                                        }>
+                                            {appt.status === 'rejected' ? 'Canceled' : appt.status}
+                                        </Badge>
+                                        </td>
                                         <td>
                                             <Button size="sm" variant="outline-info" onClick={() => handleView(appt)}>View</Button>{' '}
                                             <Button size="sm" variant="outline-primary" onClick={() => handleEdit(appt)}>Edit</Button>{' '}
@@ -410,33 +417,33 @@ function PsychologistDashboard() {
                 </Col>
 
                 <Col md={4}>
-  <Card className="mb-4 shadow-sm" style={{ borderRadius: '12px', backgroundColor: '#f9fafb' }}>
-    <Card.Header className="d-flex justify-content-between align-items-center" style={{ backgroundColor: '#5c6ac4', color: 'white', borderTopLeftRadius: '12px', borderTopRightRadius: '12px' }}>
-      <h5 className="mb-0">Patient Notes</h5>
-    </Card.Header>
-    <Card.Body style={{ maxHeight: '350px', overflowY: 'auto' }}>
-      {patientNotes.length === 0 ? (
-        <p className="text-center text-muted fst-italic">No notes found.</p>
-      ) : (
-        patientNotes.map(note => (
-          <div key={note.id} className="mb-4 p-3 rounded" style={{ backgroundColor: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.1)' }}>
-            <div className="d-flex justify-content-between align-items-center mb-1">
-              <span className="fw-semibold text-primary" style={{ fontSize: '0.95rem' }}>
-                {note.patient?.name || 'Unknown Patient'}
-              </span>
-              <small className="text-muted" style={{ fontSize: '0.8rem' }}>
-                {new Date(note.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-              </small>
-            </div>
-            <p className="mb-0 text-secondary" style={{ fontSize: '0.9rem', lineHeight: '1.3' }}>
-              {note.content.length > 120 ? note.content.slice(0, 120) + '...' : note.content}
-            </p>
-          </div>
-        ))
-      )}
-    </Card.Body>
-  </Card>
-</Col>
+                    <Card className="mb-4 shadow-sm" style={{ borderRadius: '12px', backgroundColor: '#f9fafb' }}>
+                        <Card.Header className="d-flex justify-content-between align-items-center" style={{ backgroundColor: '#5c6ac4', color: 'white', borderTopLeftRadius: '12px', borderTopRightRadius: '12px' }}>
+                            <h5 className="mb-0">Patient Notes</h5>
+                        </Card.Header>
+                        <Card.Body style={{ maxHeight: '350px', overflowY: 'auto' }}>
+                            {patientNotes.length === 0 ? (
+                                <p className="text-center text-muted fst-italic">No notes found.</p>
+                            ) : (
+                                patientNotes.map(note => (
+                                    <div key={note.id} className="mb-4 p-3 rounded" style={{ backgroundColor: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.1)' }}>
+                                        <div className="d-flex justify-content-between align-items-center mb-1">
+                                            <span className="fw-semibold text-primary" style={{ fontSize: '0.95rem' }}>
+                                                {note.patient?.name || 'Unknown Patient'}
+                                            </span>
+                                            <small className="text-muted" style={{ fontSize: '0.8rem' }}>
+                                                {new Date(note.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                                            </small>
+                                        </div>
+                                        <p className="mb-0 text-secondary" style={{ fontSize: '0.9rem', lineHeight: '1.3' }}>
+                                            {note.content.length > 120 ? note.content.slice(0, 120) + '...' : note.content}
+                                        </p>
+                                    </div>
+                                ))
+                            )}
+                        </Card.Body>
+                    </Card>
+                </Col>
 
             </Row>
 

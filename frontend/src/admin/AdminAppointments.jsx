@@ -55,9 +55,13 @@ const AdminAppointments = () => {
             oneWeekFromNow.setDate(today.getDate() + 7);
 
             const appointmentDate = new Date(a.date);
-            if (appointmentDate < today || appointmentDate > oneWeekFromNow) {
-                return false;
-            }
+
+            // Normalize dates (ignore time)
+            appointmentDate.setHours(0, 0, 0, 0);
+            today.setHours(0, 0, 0, 0);
+            oneWeekFromNow.setHours(0, 0, 0, 0);
+
+            return appointmentDate >= today && appointmentDate <= oneWeekFromNow;
         }
 
         return matchStatus && matchDate && matchSearch;
