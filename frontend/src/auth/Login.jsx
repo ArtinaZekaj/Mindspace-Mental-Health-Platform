@@ -34,7 +34,7 @@ function Login() {
       localStorage.setItem('role', role);
       localStorage.setItem('name', name);
 
-      // ✅ Force redirect to load correct dashboard cleanly
+      // ✅ Redirect to proper dashboard
       switch (role) {
         case 'admin':
           window.location.href = '/dashboard/admin';
@@ -47,7 +47,7 @@ function Login() {
       }
 
     } catch (err) {
-      setError('Email ose fjalëkalim i pasaktë.');
+      setError('Login failed. Please check your email and password.');
     }
   };
 
@@ -55,7 +55,7 @@ function Login() {
     <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
       <Card className="p-4 shadow" style={{ maxWidth: '500px', width: '100%' }}>
         <h3 className="text-center mb-4">
-          <FaSignInAlt className="me-2 text-primary" /> Kyçu në MindSpace
+          <FaSignInAlt className="me-2 text-success" /> Sign In to MindSpace
         </h3>
         {error && <Alert variant="danger">{error}</Alert>}
         <Form onSubmit={handleLogin}>
@@ -65,22 +65,22 @@ function Login() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Shkruaj email-in"
+              placeholder="Enter your email"
               required
             />
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Fjalëkalimi</Form.Label>
+            <Form.Label>Password</Form.Label>
             <Form.Control
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Shkruaj fjalëkalimin"
+              placeholder="Enter your password"
               required
             />
           </Form.Group>
-          <Button type="submit" className="w-100" variant="primary">
-            Kyçu
+          <Button type="submit" className="w-100" variant="success">
+            Sign In
           </Button>
         </Form>
       </Card>

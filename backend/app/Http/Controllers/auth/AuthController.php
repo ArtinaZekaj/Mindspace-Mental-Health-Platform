@@ -15,21 +15,39 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
+        $messages = [
+            'email.required' => 'Email is required.',
+            'email.email' => 'Email must be a valid email address like example@example.com.',
+            'password.required' => 'Password is required.',
+            'password.min' => 'Password must be at least 8 characters long.',
+            'password.regex' => 'Password must include at least one uppercase letter, one lowercase letter, one number, and one special character.',
+            'password.confirmed' => 'Password confirmation does not match.',
+        ];
+
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'password' => 'required|string|min:6|confirmed'
-        ]);
+            'password' => [
+                'required',
+                'string',
+                'min:8',
+                'confirmed',
+                'regex:/[A-Z]/',    // At least one uppercase letter
+                'regex:/[a-z]/',    // At least one lowercase letter
+                'regex:/[0-9]/',    // At least one digit
+                'regex:/[@$!%*#?&]/', // At least one special character
+            ],
+        ], $messages);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'user' 
+            'role' => 'user'
         ]);
 
         $token = $user->createToken('auth_token')->plainTextToken;

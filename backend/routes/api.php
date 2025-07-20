@@ -75,6 +75,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Calendar
     Route::get('/calendar/month', [CalendarController::class, 'monthOverview']);
 
+   
+
 
     //Psychologists Route:
     // Psychologist Dropdown
@@ -122,6 +124,5 @@ Route::middleware('auth:sanctum')->group(function () {
     //Add Appointment:
     Route::post('/admin/appointments', [AdminController::class, 'storeAdminAppointment']);
     //Profile Admin
-    
 
 });

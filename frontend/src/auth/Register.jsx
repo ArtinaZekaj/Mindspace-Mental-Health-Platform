@@ -17,7 +17,7 @@ export function Register() {
       await axios.post('http://localhost:8000/api/register', form);
       navigate('/login');
     } catch (err) {
-      setError('Regjistrimi dështoi. Kontrollo të dhënat ose email-in.');
+      setError('Registration failed. Please check your details or email.');
     }
   };
 
@@ -25,28 +25,28 @@ export function Register() {
     <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
       <Card className="p-4 shadow" style={{ maxWidth: '500px', width: '100%' }}>
         <h3 className="text-center mb-4">
-          <FaUserPlus className="me-2 text-success" /> Regjistrohu në MindSpace
+          <FaUserPlus className="me-2 text-success" /> Register to MindSpace
         </h3>
         {error && <Alert variant="danger">{error}</Alert>}
         <Form onSubmit={handleRegister}>
           <Form.Group className="mb-3">
-            <Form.Label>Emri i Plotë</Form.Label>
-            <Form.Control type="text" name="name" onChange={handleChange} placeholder="Shkruaj emrin" required />
+            <Form.Label>Full Name</Form.Label>
+            <Form.Control type="text" name="name" onChange={handleChange} placeholder="Enter your full name" required />
           </Form.Group>
           <Form.Group className="mb-3">
             <Form.Label>Email</Form.Label>
-            <Form.Control type="email" name="email" onChange={handleChange} placeholder="Shkruaj email-in" required />
+            <Form.Control type="email" name="email" onChange={handleChange} placeholder="Enter your email" required />
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Fjalëkalimi</Form.Label>
-            <Form.Control type="password" name="password" onChange={handleChange} placeholder="Shkruaj fjalëkalimin" required />
+            <Form.Label>Password</Form.Label>
+            <Form.Control type="password" name="password" onChange={handleChange} placeholder="Enter your password" required />
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Konfirmo Fjalëkalimin</Form.Label>
-            <Form.Control type="password" name="password_confirmation" onChange={handleChange} placeholder="Përsërit fjalëkalimin" required />
+            <Form.Label>Confirm Password</Form.Label>
+            <Form.Control type="password" name="password_confirmation" onChange={handleChange} placeholder="Repeat your password" required />
           </Form.Group>
           <Button type="submit" className="w-100" variant="success">
-            Regjistrohu
+            Register
           </Button>
         </Form>
       </Card>
@@ -83,7 +83,7 @@ function Login() {
 
       navigate('/dashboard');
     } catch (err) {
-      setError('Email ose fjalëkalim i pasaktë.');
+      setError('Invalid email or password.');
     }
   };
 
@@ -91,7 +91,7 @@ function Login() {
     <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
       <Card className="p-4 shadow" style={{ maxWidth: '500px', width: '100%' }}>
         <h3 className="text-center mb-4">
-          <FaSignInAlt className="me-2 text-primary" /> Kyçu në MindSpace
+          <FaSignInAlt className="me-2 text-primary" /> Sign In to MindSpace
         </h3>
         {error && <Alert variant="danger">{error}</Alert>}
         <Form onSubmit={handleLogin}>
@@ -101,22 +101,22 @@ function Login() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Shkruaj email-in"
+              placeholder="Enter your email"
               required
             />
           </Form.Group>
           <Form.Group className="mb-3">
-            <Form.Label>Fjalëkalimi</Form.Label>
+            <Form.Label>Password</Form.Label>
             <Form.Control
-              type="password"
+              type="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="Shkruaj fjalëkalimin"
+              placeholder="Enter your password"
               required
             />
           </Form.Group>
           <Button type="submit" className="w-100" variant="primary">
-            Kyçu
+            Sign In
           </Button>
         </Form>
       </Card>
