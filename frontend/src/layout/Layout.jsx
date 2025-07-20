@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { Container, Nav } from 'react-bootstrap';
-import { FaBell, FaUser, FaHome, FaSmile, FaBookOpen, FaCalendarPlus, FaCalendarAlt, } from 'react-icons/fa';
+import { FaBell, FaUser, FaHome, FaSmile, FaBookOpen, FaCalendarPlus, FaCalendarAlt, FaFlask, } from 'react-icons/fa';
 import { FaRegCalendarCheck } from 'react-icons/fa';
 import { Dropdown } from 'react-bootstrap';
 
@@ -46,7 +46,6 @@ function Layout() {
                     <Nav.Link onClick={() => navigate('/dashboard/profile')} className="d-flex align-items-center gap-3 fs-5 text-dark">
                         <FaUser size={25} /> <span>Profile</span>
                     </Nav.Link>
-
 
 
                 </Nav>

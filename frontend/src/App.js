@@ -33,6 +33,9 @@ const MyAppointments = lazy(() => import('./users/MyAppointments'));
 const CalendarPersonal = lazy(() => import('./users/CalendarPersonal'));
 const Profile = lazy(() => import('./users/Profile'));
 
+
+
+
 function App() {
   const token = localStorage.getItem('token');
   const role = localStorage.getItem('role');
@@ -90,6 +93,7 @@ function App() {
               <Route path="my-appointments" element={<MyAppointments />} />
               <Route path="calendar" element={<CalendarPersonal />} />
               <Route path="profile" element={<Profile />} />
+              
             </Route>
           )}
 
