@@ -10,10 +10,14 @@ use App\Http\Controllers\User\AppointmentController as UserAppointmentController
 use App\Http\Controllers\User\CalendarController;
 use App\Http\Controllers\psychologist\PatientNoteController;
 use App\Http\Controllers\admin\AdminController;
+use App\Http\Controllers\LigjeruesController;
 
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
+//PROVIMI:
+Route::apiResource('ligjeruesit', LigjeruesController::class);
 
 
 Route::middleware('auth:sanctum')->group(function () {
@@ -122,6 +126,12 @@ Route::middleware('auth:sanctum')->group(function () {
     //Add Appointment:
     Route::post('/admin/appointments', [AdminController::class, 'storeAdminAppointment']);
     //Profile Admin
-    
+
+
+    //AI ROUTES:
+    //merr 7 moods te fundit per userin specifik 
+    Route::get('/ai/moods', [MoodController::class, 'aiUserMoods']);
+    //lexo moodi-in , dergo tek OpenAI, kthe pergjigje:
+    Route::get('/ai/suggestion', [MoodController::class, 'aiSuggestion']);
 
 });
