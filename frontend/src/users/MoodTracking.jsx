@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Card, Button, Form } from 'react-bootstrap';
 import { FaSmileBeam, FaSmile, FaMeh, FaFrown, FaSadTear } from 'react-icons/fa';
 import Confetti from 'react-confetti';
-import useWindowSize from 'react-use/lib/useWindowSize';
+import { useWindowSize } from 'react-use';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import 'animate.css';
@@ -32,6 +32,71 @@ const MoodTracking = () => {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [motivationalText, setMotivationalText] = useState('');
   const { width, height } = useWindowSize();
+  const [showAskAI, setShowAskAI] = useState(false);
+  const [showAskAIModal, setShowAskAIModal] = useState(false);
+  const [showAISuggestionsModal, setShowAISuggestionsModal] = useState(false);
+  const [loadingAISuggestions, setLoadingAISuggestions] = useState(false);
+  const [aiInsight, setAiInsight] = useState("");
+  const [showAiSection, setShowAiSection] = useState(false);
+
+
+  // GET AI SUGGESTION FROM BACKEND
+  const getAISuggestionFromBackend = async () => {
+    const token = localStorage.getItem("token");
+
+    try {
+      const response = await axios.get("http://localhost:8000/api/ai/suggestion", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setAiInsight({
+        summary: response.data.summary,
+        suggestions: response.data.suggestions
+      });
+
+      setShowAiSection(true);
+
+    } catch (error) {
+      console.error("AI error:", error.response?.data || error.message);
+
+      if (error.response?.status === 429) {
+        setAiInsight("We’ve reached the AI limit for now. Please wait a bit and try again. 💡");
+      } else if (error.response?.status === 404) {
+        setAiInsight("You don’t have enough mood entries yet for AI to analyze. Try tracking your mood for a few days. 😊");
+      } else {
+        setAiInsight("AI could not generate a suggestion at the moment.");
+      }
+
+      setShowAiSection(true);
+    }
+  };
+  const handleShowAISuggestions = async () => {
+    const token = localStorage.getItem("token");
+
+    setShowAskAIModal(false);
+    setShowAISuggestionsModal(true);
+    setLoadingAISuggestions(true);
+
+    try {
+      const response = await axios.get("http://localhost:8000/api/ai/suggestion", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      setAiInsight({
+        summary: response.data.summary,
+        suggestions: response.data.suggestions
+      });
+
+    } catch (error) {
+      setAiInsight({
+        summary: "AI could not generate suggestions right now.",
+        suggestions: []
+      });
+    }
+
+    setLoadingAISuggestions(false);
+  };
+
 
   const handleSave = async () => {
     if (!selectedMood) {
@@ -49,31 +114,28 @@ const MoodTracking = () => {
 
     try {
       await axios.post('http://localhost:8000/api/moods', moodEntry, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
 
+      // 1) Show motivational message
       setMotivationalText(motivationMessages[selectedMood.label]);
       setShowMotivation(true);
 
       setTimeout(() => {
         setShowMotivation(false);
         setShowSuccessMessage(true);
-        setShowConfetti(true);
-        toast.success('Mood saved successfully! ✅');
 
         setTimeout(() => {
           setShowSuccessMessage(false);
-          setShowConfetti(false);
-          setSelectedMood(null);
-          setNotes('');
-        }, 5000);
-      }, 5000);
+          setShowAskAIModal(true);
+        }, 2000);
+
+      }, 4000);
+
     } catch (error) {
-  console.error('Error response:', error.response?.data || error.message);
-  toast.error('Failed to save mood. Please try again.');
-}
+      console.error('Error response:', error.response?.data || error.message);
+      toast.error('Failed to save mood. Please try again.');
+    }
   };
 
   return (
@@ -96,8 +158,10 @@ const MoodTracking = () => {
         "Track your emotions daily to better understand yourself. 🌱"
       </p>
 
+      {/* SUCCESS MESSAGE */}
       {showSuccessMessage && (
-        <Card className="text-center border-success shadow-lg p-5 animate__animated animate__fadeInUp" style={{ borderRadius: '16px', backgroundColor: '#e6ffed' }}>
+        <Card className="text-center border-success shadow-lg p-5 animate__animated animate__fadeInUp"
+          style={{ borderRadius: '16px', backgroundColor: '#e6ffed' }}>
           <div className="text-success display-5 mb-3">✔️</div>
           <h4 className="fw-bold text-success">Mood tracked successfully!</h4>
           <p className="text-muted">Your mood has been recorded. You can track another in a few seconds...</p>
@@ -106,7 +170,8 @@ const MoodTracking = () => {
 
       {!showSuccessMessage && (
         <>
-          <Card className="mb-4 shadow-sm p-4 border-0" style={{ borderRadius: '20px', backgroundColor: '#ffffffcc' }}>
+          <Card className="mb-4 shadow-sm p-4 border-0"
+            style={{ borderRadius: '20px', backgroundColor: '#ffffffcc' }}>
             <h6 className="mb-3 text-muted">Select your mood</h6>
             <div className="d-flex justify-content-between flex-wrap gap-4">
               {moodOptions.map((option) => (
@@ -126,13 +191,7 @@ const MoodTracking = () => {
                     transform: selectedMood?.value === option.value ? 'scale(1.1)' : 'scale(1)',
                   }}
                 >
-                  <div
-                    style={{
-                      fontSize: '2.5rem',
-                      marginBottom: '0.5rem',
-                      color: option.iconColor,
-                    }}
-                  >
+                  <div style={{ fontSize: '2.5rem', marginBottom: '0.5rem', color: option.iconColor }}>
                     {option.icon}
                   </div>
                   <small className="fw-semibold">{option.label}</small>
@@ -141,7 +200,8 @@ const MoodTracking = () => {
             </div>
           </Card>
 
-          <Card className="mb-4 shadow-sm p-4 border-0" style={{ borderRadius: '20px', backgroundColor: '#ffffffcc' }}>
+          <Card className="mb-4 shadow-sm p-4 border-0"
+            style={{ borderRadius: '20px', backgroundColor: '#ffffffcc' }}>
             <h6 className="mb-2 text-muted">Add notes (optional)</h6>
             <Form.Control
               as="textarea"
@@ -161,11 +221,12 @@ const MoodTracking = () => {
             >
               💾 Save Mood
             </Button>
+
           </div>
         </>
       )}
 
-      {/* FLOATING MOTIVATION MESSAGE IN CENTER */}
+      {/* FLOATING MOTIVATION */}
       {showMotivation && (
         <div
           className="animate__animated animate__zoomIn"
@@ -183,13 +244,141 @@ const MoodTracking = () => {
             textAlign: 'center',
             fontSize: '1.6rem',
             fontWeight: 'bold',
-            lineHeight: '1.7',
             zIndex: 9999,
             maxWidth: '90%',
           }}
         >
           <div style={{ fontSize: '2rem', marginBottom: '1rem' }}>🌟 Stay Inspired!</div>
           <p style={{ fontStyle: 'italic', margin: 0 }}>{motivationalText}</p>
+        </div>
+      )}
+
+
+      {/* AI SUGGESTION SECTION */}
+      {showAskAIModal && (
+        <div
+          className="animate__animated animate__fadeIn"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "rgba(0,0,0,0.4)",
+            backdropFilter: "blur(6px)",
+            zIndex: 99999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}
+        >
+          <Card style={{
+            width: "500px",
+            padding: "2rem",
+            borderRadius: "20px",
+            textAlign: "center"
+          }}>
+            <h4 className="fw-bold mb-3">
+              💡 Would you like to see personalized emotional suggestions from AI?
+            </h4>
+
+            <div className="d-flex justify-content-center gap-3 mt-4">
+              <Button
+                variant="primary"
+                className="px-4"
+                onClick={handleShowAISuggestions}
+              >
+                Yes, show me
+              </Button>
+              <Button
+                variant="secondary"
+                className="px-4"
+                onClick={() => setShowAskAIModal(false)}
+              >
+                No, maybe later
+              </Button>
+            </div>
+          </Card>
+        </div>
+      )}
+      {showAISuggestionsModal && (
+        <div
+          className="animate__animated animate__fadeIn"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100vw",
+            height: "100vh",
+            background: "rgba(0,0,0,0.4)",
+            backdropFilter: "blur(6px)",
+            zIndex: 99999,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}
+        >
+          <Card
+            style={{
+              width: "650px",
+              padding: "2rem",
+              borderRadius: "20px",
+              maxHeight: "80vh",
+              overflowY: "auto",
+              textAlign: "center"
+            }}
+          >
+
+            {/* LOADER */}
+            {loadingAISuggestions ? (
+              <>
+                <div className="mb-4">
+                  <div className="spinner-border text-primary" role="status" />
+                </div>
+                <h5 className="fw-bold">Generating suggestions…</h5>
+                <p className="text-muted">
+                  Please wait a moment while AI analyzes your emotional state ❤️‍🩹
+                </p>
+              </>
+            ) : (
+              <>
+                {/* SUGJERIMET */}
+                <h4 className="fw-bold mb-2">💡 AI Emotional Suggestions</h4>
+                <p className="text-muted">{aiInsight.summary}</p>
+
+                {aiInsight.suggestions?.map((s, index) => (
+                  <div
+                    key={index}
+                    className="p-3 mb-3 rounded shadow-sm"
+                    style={{
+                      backgroundColor:
+                        s.icon === "heart" ? "#ffe6e9" :
+                          s.icon === "support" ? "#e7f2ff" :
+                            "#e8ffe8",
+                      borderLeft: "5px solid #444"
+                    }}
+                  >
+                    <h5>
+                      {s.icon === "heart" && "❤️ "}
+                      {s.icon === "support" && "🧑‍🤝‍🧑 "}
+                      {s.icon === "movement" && "💚 "}
+                      {s.title}
+                    </h5>
+                    <p>{s.description}</p>
+                  </div>
+                ))}
+
+                <Button
+                  variant="dark"
+                  className="px-4 mt-3"
+                  onClick={() => setShowAISuggestionsModal(false)}
+                >
+                  Close
+                </Button>
+              </>
+            )}
+
+          </Card>
         </div>
       )}
     </div>

@@ -46,8 +46,6 @@ function Layout() {
                     <Nav.Link onClick={() => navigate('/dashboard/profile')} className="d-flex align-items-center gap-3 fs-5 text-dark">
                         <FaUser size={25} /> <span>Profile</span>
                     </Nav.Link>
-
-
                 </Nav>
             </div>
 
