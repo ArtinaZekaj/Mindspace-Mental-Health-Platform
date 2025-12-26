@@ -11,8 +11,6 @@ import Layout from './layout/Layout';
 import AdminLayout from './layout/AdminLayout';
 import PsychologistLayout from './layout/PsychologistLayout';
 
-//PROVIMI:
-import Ligjeruesi from "./users/Ligjeruesi";
 
 // Admin Routes:
 const AdminDashboard = lazy(() => import('./admin/AdminDashboard'));
@@ -97,8 +95,6 @@ function App() {
               <Route path="calendar" element={<CalendarPersonal />} />
               <Route path="profile" element={<Profile />} />
               
-              {/*PROVIMI*/}
-              <Route path="lab1" element={<Ligjeruesi />} />
             </Route>
           )}
 

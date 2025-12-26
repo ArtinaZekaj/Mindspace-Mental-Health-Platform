@@ -4,6 +4,7 @@ import { Container, Nav } from 'react-bootstrap';
 import { FaBell, FaUser, FaHome, FaSmile, FaBookOpen, FaCalendarPlus, FaCalendarAlt, FaFlask, } from 'react-icons/fa';
 import { FaRegCalendarCheck } from 'react-icons/fa';
 import { Dropdown } from 'react-bootstrap';
+import AIChat from "../components/AIChat";
 
 function Layout() {
     const navigate = useNavigate();
@@ -81,7 +82,7 @@ function Layout() {
                     </Dropdown>
 
                 </div>
-
+                <AIChat />
                 {/* Content container */}
                 <div className="flex-grow-1 px-4 pb-4 bg-light">
                     <Container fluid>

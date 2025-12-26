@@ -148,7 +148,7 @@ const AdminAppointments = () => {
                 <Card.Body className="py-4 px-5">
                     <h2 className="fw-semibold text-dark mb-2">Manage Appointments</h2>
                     <p className="text-muted mb-0">
-                        You organize, support, and protect the heart of the platform — your leadership is the silent power behind every smile. 🌱✨
+                        You organize, support, and protect the heart of the platform - your leadership is the silent power behind every smile. 🌱✨
                     </p>
                 </Card.Body>
             </Card>

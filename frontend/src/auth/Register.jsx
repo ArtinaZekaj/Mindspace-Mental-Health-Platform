@@ -2,22 +2,64 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Container, Card, Form, Button, Alert } from 'react-bootstrap';
-import { FaSignInAlt, FaUserPlus } from 'react-icons/fa';
+import { FaUserPlus } from 'react-icons/fa';
 
 export function Register() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: '', email: '', password: '', password_confirmation: '' });
-  const [error, setError] = useState('');
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    password: '',
+    password_confirmation: ''
+  });
+
+  const [errors, setErrors] = useState({});
+  const [serverError, setServerError] = useState('');
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: '' });
+  };
+
+  const validate = () => {
+    const newErrors = {};
+
+    if (!form.name || form.name.length < 3) {
+      newErrors.name = 'Full name must be at least 3 characters long.';
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email)) {
+      newErrors.email = 'Please enter a valid email address.';
+    }
+
+    if (form.password.length < 8) {
+      newErrors.password = 'Password must be at least 8 characters long.';
+    }
+
+    if (form.password !== form.password_confirmation) {
+      newErrors.password_confirmation = 'Passwords do not match.';
+    }
+
+    return newErrors;
+  };
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setServerError('');
+
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
     try {
       await axios.post('http://localhost:8000/api/register', form);
       navigate('/login');
     } catch (err) {
-      setError('Regjistrimi dështoi. Kontrollo të dhënat ose email-in.');
+      setServerError('Registration failed. Email may already be in use.');
     }
   };
 
@@ -25,103 +67,79 @@ export function Register() {
     <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
       <Card className="p-4 shadow" style={{ maxWidth: '500px', width: '100%' }}>
         <h3 className="text-center mb-4">
-          <FaUserPlus className="me-2 text-success" /> Regjistrohu në MindSpace
+          <FaUserPlus className="me-2 text-success" />
+          Create your MindSpace account
         </h3>
-        {error && <Alert variant="danger">{error}</Alert>}
-        <Form onSubmit={handleRegister}>
+
+        {serverError && <Alert variant="danger">{serverError}</Alert>}
+
+        <Form onSubmit={handleRegister} noValidate>
           <Form.Group className="mb-3">
-            <Form.Label>Emri i Plotë</Form.Label>
-            <Form.Control type="text" name="name" onChange={handleChange} placeholder="Shkruaj emrin" required />
+            <Form.Label>Full Name</Form.Label>
+            <Form.Control
+              type="text"
+              name="name"
+              placeholder="Enter your full name"
+              value={form.name}
+              onChange={handleChange}
+              isInvalid={!!errors.name}
+            />
+            <Form.Control.Feedback type="invalid">
+              {errors.name}
+            </Form.Control.Feedback>
           </Form.Group>
+
           <Form.Group className="mb-3">
-            <Form.Label>Email</Form.Label>
-            <Form.Control type="email" name="email" onChange={handleChange} placeholder="Shkruaj email-in" required />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Fjalëkalimi</Form.Label>
-            <Form.Control type="password" name="password" onChange={handleChange} placeholder="Shkruaj fjalëkalimin" required />
-          </Form.Group>
-          <Form.Group className="mb-3">
-            <Form.Label>Konfirmo Fjalëkalimin</Form.Label>
-            <Form.Control type="password" name="password_confirmation" onChange={handleChange} placeholder="Përsërit fjalëkalimin" required />
-          </Form.Group>
-          <Button type="submit" className="w-100" variant="success">
-            Regjistrohu
-          </Button>
-        </Form>
-      </Card>
-    </Container>
-  );
-}
-
-function Login() {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-
-  const handleLogin = async (e) => {
-    e.preventDefault();
-
-    try {
-      const response = await axios.post('http://localhost:8000/api/login', {
-        email,
-        password
-      });
-
-      const token = response.data.access_token;
-      localStorage.setItem('token', token);
-
-      const profile = await axios.get('http://localhost:8000/api/me', {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      });
-
-      localStorage.setItem('role', profile.data.role);
-      localStorage.setItem('name', profile.data.name);
-
-      navigate('/dashboard');
-    } catch (err) {
-      setError('Email ose fjalëkalim i pasaktë.');
-    }
-  };
-
-  return (
-    <Container className="d-flex align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
-      <Card className="p-4 shadow" style={{ maxWidth: '500px', width: '100%' }}>
-        <h3 className="text-center mb-4">
-          <FaSignInAlt className="me-2 text-primary" /> Kyçu në MindSpace
-        </h3>
-        {error && <Alert variant="danger">{error}</Alert>}
-        <Form onSubmit={handleLogin}>
-          <Form.Group className="mb-3">
-            <Form.Label>Email</Form.Label>
+            <Form.Label>Email Address</Form.Label>
             <Form.Control
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Shkruaj email-in"
-              required
+              name="email"
+              placeholder="example@email.com"
+              value={form.email}
+              onChange={handleChange}
+              isInvalid={!!errors.email}
             />
+            <Form.Control.Feedback type="invalid">
+              {errors.email}
+            </Form.Control.Feedback>
           </Form.Group>
+
           <Form.Group className="mb-3">
-            <Form.Label>Fjalëkalimi</Form.Label>
+            <Form.Label>Password</Form.Label>
             <Form.Control
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="Shkruaj fjalëkalimin"
-              required
+              name="password"
+              placeholder="At least 8 characters"
+              value={form.password}
+              onChange={handleChange}
+              isInvalid={!!errors.password}
             />
+            <Form.Control.Feedback type="invalid">
+              {errors.password}
+            </Form.Control.Feedback>
           </Form.Group>
-          <Button type="submit" className="w-100" variant="primary">
-            Kyçu
+
+          <Form.Group className="mb-3">
+            <Form.Label>Confirm Password</Form.Label>
+            <Form.Control
+              type="password"
+              name="password_confirmation"
+              placeholder="Repeat your password"
+              value={form.password_confirmation}
+              onChange={handleChange}
+              isInvalid={!!errors.password_confirmation}
+            />
+            <Form.Control.Feedback type="invalid">
+              {errors.password_confirmation}
+            </Form.Control.Feedback>
+          </Form.Group>
+
+          <Button type="submit" className="w-100" variant="success">
+            Register
           </Button>
         </Form>
       </Card>
     </Container>
   );
 }
-
 export default Register;

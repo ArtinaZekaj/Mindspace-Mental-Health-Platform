@@ -108,7 +108,7 @@ function MyAppointments() {
           </h3>
           <p className="fs-5">
             You've completed <strong>{sessionCount}</strong> session{sessionCount !== 1 ? 's' : ''}!
-            Every step you take matters—keep going!
+            Every step you take matters-keep going!
           </p>
 
           <Row className="mt-4 text-center">

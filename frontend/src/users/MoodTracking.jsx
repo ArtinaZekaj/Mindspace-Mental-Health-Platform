@@ -78,24 +78,28 @@ const MoodTracking = () => {
     setLoadingAISuggestions(true);
 
     try {
-      const response = await axios.get("http://localhost:8000/api/ai/suggestion", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await axios.post(
+        "http://localhost:8000/api/ai/suggestion",
+        { mood: selectedMood.label }, 
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
       setAiInsight({
         summary: response.data.summary,
-        suggestions: response.data.suggestions
+        suggestions: response.data.suggestions,
       });
-
     } catch (error) {
       setAiInsight({
         summary: "AI could not generate suggestions right now.",
-        suggestions: []
+        suggestions: [],
       });
     }
 
     setLoadingAISuggestions(false);
   };
+
 
 
   const handleSave = async () => {
@@ -117,7 +121,7 @@ const MoodTracking = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      // 1) Show motivational message
+      //  Shfaq nje mesazh motivues 
       setMotivationalText(motivationMessages[selectedMood.label]);
       setShowMotivation(true);
 
@@ -128,7 +132,7 @@ const MoodTracking = () => {
         setTimeout(() => {
           setShowSuccessMessage(false);
           setShowAskAIModal(true);
-        }, 2000);
+        }, 3000);
 
       }, 4000);
 
