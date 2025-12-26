@@ -65,34 +65,25 @@ class MoodController extends Controller
         return response()->json($moods);
     }
 
-    //Funksioni per AI, per te marre 7 moods te fundit !
-    public function aiUserMoods()
-    {
-        $userId = Auth::id();
-
-        $moods = Mood::where('user_id', $userId)
-            ->orderBy('date', 'desc')
-            ->limit(7)
-            ->get(['mood', 'date']);
-
-        return response()->json([
-            'status' => 'success',
-            'data' => $moods
-        ]);
-    }
-
-    //Funksioni lexo mood-in , dergoje tek OpenAI, kthe suggestions psikologjik
-    public function aiSuggestion()
+    //AI EMOTIONAL SUGGESTIONS:
+    public function aiSuggestion(Request $request)
     {
         try {
             $client = new \GuzzleHttp\Client();
 
-            $lastMood = Mood::where('user_id', Auth::id())
-                ->orderBy('date', 'desc')
-                ->first();
+            //  Merr mood-in nga frontend (prioritet)
+            $userMood = $request->input('mood');
 
-            $userMood = $lastMood ? $lastMood->mood : "neutral";
+            //  Nëse frontend nuk dërgon mood (fallback), përdor mood-in e fundit
+            if (!$userMood) {
+                $lastMood = Mood::where('user_id', Auth::id())
+                    ->orderBy('date', 'desc')
+                    ->first();
 
+                $userMood = $lastMood ? $lastMood->mood : "neutral";
+            }
+
+            //  Kërkesa drejtuar HuggingFace
             $response = $client->post(
                 'https://router.huggingface.co/v1/chat/completions',
                 [
@@ -104,31 +95,56 @@ class MoodController extends Controller
                         "model" => "meta-llama/Llama-3.2-1B-Instruct",
                         "messages" => [
                             [
-                                "role" => "user",
+                                "role" => "system",
                                 "content" =>
-                                "The user's current mood is: $userMood.
-                                You are an empathetic mental health assistant. Return ONLY JSON in this structure:
-                                {
-                                  \"summary\": \"...\",
-                                  \"suggestions\": [
-                                    { \"title\": \"..\", \"description\": \"..\", \"icon\": \"heart\" },
-                                    { \"title\": \"..\", \"description\": \"..\", \"icon\": \"support\" },
-                                    { \"title\": \"..\", \"description\": \"..\", \"icon\": \"movement\" }
-                                  ]
-                                }
-                                No other text outside JSON."
+                                "You are MindSpace AI - a warm, deeply empathetic emotional companion.
+        Your purpose is to speak gently to the user's heart, offering emotional support
+        that feels human, soft, and comforting.
+
+        Your tone must ALWAYS be:
+        - deeply humane
+        - warm, emotionally intelligent
+        - soothing, gentle, honest
+        - validating and reassuring
+        - non-judgmental
+        - never robotic, never clinical
+        - never giving medical advice or therapy
+
+        You adapt your emotional style depending on the user's mood:
+
+        ▸ Very Happy — celebrate their joy, amplify positivity, encourage gratitude and sharing.
+        ▸ Happy — reinforce good energy, acknowledge positive momentum.
+        ▸ Neutral — help them reflect calmly and gain clarity.
+        ▸ Sad — respond with tenderness, comfort, compassion, and grounding reassurance.
+        ▸ Very Sad — be extremely gentle, emotionally present, validating, warm.
+
+        Your suggestions must feel like they come from a caring human friend,
+        not a machine — they should touch the heart.
+
+        You MUST return ONLY JSON:
+        {
+            \"summary\": \"...\",
+            \"suggestions\": [
+                { \"title\": \"..\", \"description\": \"..\", \"icon\": \"heart\" },
+                { \"title\": \"..\", \"description\": \"..\", \"icon\": \"support\" },
+                { \"title\": \"..\", \"description\": \"..\", \"icon\": \"movement\" }
+            ]
+        }
+        No text outside JSON."
+                            ],
+                            [
+                                "role" => "user",
+                                "content" => "The user's current mood is: $userMood. Please generate the JSON response."
                             ]
                         ],
-                        "max_tokens" => 200,
+                        "max_tokens" => 300,
                     ]),
                 ]
             );
 
+            //  Parse rezultat
             $result = json_decode($response->getBody(), true);
-
             $raw = $result['choices'][0]['message']['content'] ?? "{}";
-
-            // Parse JSON the model returned
             $json = json_decode($raw, true);
 
             return response()->json([

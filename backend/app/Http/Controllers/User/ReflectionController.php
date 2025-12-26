@@ -28,10 +28,10 @@ class ReflectionController extends Controller
 
         $reflection = Reflection::create([
             'user_id' => Auth::id(),
-            'theme' => $request->theme,
-            'title' => $request->title,
-            'content' => $request->content,
-            'date' => $request->date,
+            'theme' => $request->input('theme'),
+            'title' => $request->input('title'),
+            'content' => $request->input('content'),
+            'date' => $request->input('date'),
         ]);
 
         return response()->json(['message' => 'Reflection added.', 'data' => $reflection]);
